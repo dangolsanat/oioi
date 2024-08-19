@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+
+{% block main_content %}
+<div class="card-box">
+    {% if posts %}
+        {% for post in posts %}
+            <div class="card" data-href="/posts/{{ post.id }}">
+                {% if post.user_id in users_dict %}
+                    <div class="user-info"> 
+                        <img src="{{ post.user_rel.full_user.user_image }}" alt="User Image" class="circular-image" style="border-radius: 50%; overflow: hidden;">
+                        <div style="display: flex; gap: 10px;">
+                            <h2 style="margin-top: 4px; font-size: 1.5rem; line-height: 1; padding: 0;">
+                                <a href="/users/profile/{{ post.user_id }}" style="text-decoration: none;">
+                                    {{ users_dict[post.user_id].first_name }}
+                                </a>
+                            </h2>
+                            <i class="fa-regular fa-circle-check" style="color: green; margin-top: 8px"></i>
+                            <strong style="margin-top: 6px">•</strong>
+                            <small style="margin-top: 8px"><strong>{{ users_dict[post.user_id].age }}</strong></small>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="image-gallery">
+                    {% if post.images %}
+                        <div class="gallery-container" data-images="{{ post.images | map(attribute='file_name') | join(',') }}">
+                            <img id="gallery-image" src="/static/uploads/{{ post.images[0].file_name }}" alt="Post Image">
+                            <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-left nav-button prev-button"></i></button>
+                            <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-right nav-button next-button"></i></button>
+                        </div>
+                    {% else %}
+                        <p>No images available for this post.</p>
+                    {% endif %}
+                </div>
+                <div class="card-details">
+                    <div>
+                        <h2 style="margin: 8px; display: inline-block; margin-right: 2px;">${{ post.price }}</h2>
+                        <h1 style="display: inline-block">/mo</h1>
+                    </div>
+                    <div>
+                        <h1 style="margin: 0px; margin-bottom: 5px;">{{ post.title }}</h1>
+                    </div>
+                    <div style="align-self: flex-start; justify-self: flex-end;">
+                        <small><strong>Borough:</strong> {{ post.borough }}</small><br>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts available.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'index.html' %}
+
+{% block sidea_content %}
+<div class="window sidea">
+    <div class="message-content">
+        <h2>Conversations</h2>
+        <div class="message-area">
+            {% if latest_messages_with_users %}
+                {% for message in latest_messages_with_users %}
+                    <a href="{{ url_for('messages', recipient_id=message.receiver.id) }}">
+                        <div class="message" data-timestamp="{{ message.timestamp }}">
+                            <p style="font-weight: bold;">{{ message.receiver.full_user.first_name }}</p>
+                            <small>{{ message.content }}</small>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <p>No messages found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block main_content %}
+<div>
+    {% if recipient %}
+        <h2>Conversation with {{ recipient.full_user.first_name }} {{ recipient.full_user.last_name }}</h2>
+        <div class="messages-container" id="chat-container">
+            {% if messages %}
+                <ul id="message-list">
+                    {% for message in messages %}
+                        <li class="{{ 'message-right' if message.sender_id == cur_user else 'message-left' }}">
+                             {{ message.content }}<br>
+                            <small style="font-size: 0.2em;">Sent at: {{ message.timestamp }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No messages found.</p>
+            {% endif %}
+        </div>
+        
+        <form id="message-form" method="post">
+            <input type="hidden" id="recipient-id" name="recipient_id" value="{{ recipient.id }}">
+            <input type="text" id="message-input" name="message" placeholder="Enter your message" required>
+            <button type="submit" class="btn">Send</button>
+        </form>
+    {% else %}
+        <p>Select a user to start a conversation.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'index.html' %}
+
+{% block main_content %}
+<div class="window sidea">
+
+    <div class="register" style="padding: 10px;">
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {%  for field in form
+            if field.widget.input_type !='hidden'
+            %}
+        <p>
+            {{ field.label }}
+            {{field}}
+            <br>
+            {% for error in field.errors %}
+            <br><small style="color: red;">{{ error }}</small>
+            {% endfor %}
+        </p>
+        {% endfor %}
+
+        <button class="btn" type="submit" style="background-color: #17b01e;">submit</button>
+    </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'index.html' %}
+
+{% block main_content %}
+<div class="all-container">
+
+
+        
+    <div class="photo-map-container">
+            <div class="post-image-gallery">
+                {% if post.images %}
+                    {% for img in post.images %}
+                        <!-- Ensure correct image source -->
+                        <img src="{{ '/static/uploads/' + img.file_name}}" alt="" style="height: 200px;" />
+                    {% endfor %}
+                {% else %}
+                    <p>No images available for this post.</p>
+                {% endif %}
+            </div>
+        
+            <!-- Map Section -->
+
+    </div>
+
+    <div class="post-details" style="display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; gap: 80px;">
+        <div style="min-width: 60%;">
+            
+            <h2>{{ post.title }}</h2>
+
+            <div style="display: flex; flex-direction: row; gap: 40px;">
+                <p style="color: grey;">
+                    Rent: <br>
+                    Address: <br>
+                    Neighborhood: <br>
+                    Borough: <br>
+                </p>
+                <p>
+                    {{ post.price }} /month<br>
+                    {{ post.address }} <br>
+                    {{ post.neighbor }} <br>
+                    {{ post.borough }} <br>
+                </p>
+            </div>
+
+            <div>
+                <p>
+                    <h3 style="color: grey">About the listing</h3>
+                    <p>{{ post.description }}</p>
+                </p>
+                <br>
+                <p>
+                    <h3 style="color: grey">About the Neighborhood</h3>
+                    <ul>{{ post.neighborhood|safe }}</ul>
+                </p>
+                <br>
+                <p>
+                    <h3 style="color: grey">Amenities in the home</h3>
+                    <ul style="list-style-type: none; padding: 0; margin: 0;">
+                        <li style="display: inline; margin-right: 30px"><i class="fa-solid fa-couch"  style="font-size: 20px;margin-bottom: 20px;"></i> Furnished</li>     
+                        <li style="display: inline;"><i class="fa-solid fa-restroom"   style="font-size: 20px;"></i> Private Bathroom</li>
+                    </ul>
+
+                </p>
+            </div>
+
+
+
+        </div>
+        <div style="display: flex;">
+            <div style="display: flex; flex-direction: column; gap:20px;">
+                <div class="user-details">
+                    <a href="/users/profile/{{ post.user_rel.full_user.id }}" style="text-decoration: none;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="{{post.user_rel.full_user.user_image}}" alt="user_image" class="circular-image">
+                            <div style="display: flex; flex-direction: column;">
+                                <div style="display: flex; flex-direction: row; align-items: center; margin: 0px; gap: 5px;">
+                                    <small><strong>{{post.user_rel.full_user.first_name}}</strong></small>
+                                    <i class="fa-regular fa-circle-check" style="color: green;"></i>
+                                    <strong>•</strong>
+                                    <small>{{ post.user_rel.full_user.calculate_age() }}</small>
+                                </div>
+                                <div style="margin-top: 5px;">
+                                    <small style="display: inline-block; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ post.user_rel.full_user.bio }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div style="display: flex;">
+                    {% if fuser %}
+                    <a href="{{ url_for('messages', recipient_id=full_user_info.id) }}" class="btn" style="display: none;">chat</a>
+                    {% else %}
+                    <a href="{{ url_for('messages', recipient_id=full_user_info.id) }}" class="btn">chat</a>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if latitude and longitude %}
+                    <div class="map-container" style="width: 400px; height: 400px; margin-top: 20px;">
+                        <div id="map" style="width: 100%; height: 100%;"></div>
+                    </div>
+                    {% else %}
+                    <p>Map cannot be displayed because the address could not be located.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+<!-- Leaflet CSS and JavaScript -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const latitude = {{ latitude|default('null') }};
+    const longitude = {{ longitude|default('null') }};
+
+    if (latitude !== 'null' && longitude !== 'null') {
+        var map = L.map('map').setView([latitude, longitude], 16);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add a marker at the location
+        L.circle([latitude, longitude], {
+            color: 'rgb(0, 51, 101)',
+            fillColor:'rgb(0, 51, 101)',
+            fillOpacity: 0.4,
+            radius: 200
+        }).addTo(map)
+            .openPopup();
+    } else {
+        console.error('Map cannot be displayed because the address could not be located.');
+        document.getElementById('map').innerHTML = 'Map cannot be displayed because the address could not be located.';
+    }
+});
+</script>
+
+
+
+
+{% endblock %}

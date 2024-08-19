@@ -1,0 +1,63 @@
+{% extends 'index.html' %}
+
+{% block main_content %}
+<div class="post-details">
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.description }}</p>
+    
+    <div class="photo-map-container">
+        <div class="image-gallery" style="display: flex; flex-wrap: wrap; height: 300px;">
+            {% if post.images %}
+                {% for img in post.images %}
+                    <!-- Ensure correct image source -->
+                    <img src="{{ '/static/uploads/' + img.file_name}}" alt="" style="height: 200px;" />
+                {% endfor %}
+            {% else %}
+                <p>No images available for this post.</p>
+            {% endif %}
+        </div>
+    
+        <!-- Map Section -->
+        {% if latitude and longitude %}
+        <div class="map-container" style="width: 100%; height: 400px; margin-top: 20px;">
+            <div id="map" style="width: 100%; height: 100%;"></div>
+        </div>
+        {% else %}
+        <p>Map cannot be displayed because the address could not be located.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Leaflet CSS and JavaScript -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const latitude = {{ latitude|default('null') }};
+    const longitude = {{ longitude|default('null') }};
+
+    if (latitude !== 'null' && longitude !== 'null') {
+        var map = L.map('map').setView([latitude, longitude], 16);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add a marker at the location
+        L.circle([latitude, longitude], {
+            color: 'rgb(0, 51, 101)',
+            fillColor:'rgb(0, 51, 101)',
+            fillOpacity: 0.4,
+            radius: 200
+        }).addTo(map)
+            .openPopup();
+    } else {
+        console.error('Map cannot be displayed because the address could not be located.');
+        document.getElementById('map').innerHTML = 'Map cannot be displayed because the address could not be located.';
+    }
+});
+</script>
+
+{% endblock %}

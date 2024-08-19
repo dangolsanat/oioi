@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This is home</title>
+
+    <link id="theme-stylesheet" rel="stylesheet" href="/static/css/styles.css"> <!-- Default stylesheet -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { visibility: hidden }
+        canvas { display: block; }
+        #content {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        #content h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+        #content p {
+            font-size: 1.5em;
+        }
+        #search-button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <aside class="window navi">
+            
+                <div class="terminal-prompt logo" style="color:red"><a href="/home" style="text-decoration: none;color: white;">
+                    <i class="fa-solid fa-house-user"></i>
+                     oioi</a> 
+                </div>
+
+            <div> 
+                <input type="text" id="search-input" placeholder="///search" class="search-field">
+                <button id="search-button" style="display: none;">Search</button>
+            </div>
+            <div class="auth" style="display: flex; flex-direction: row; gap: 20px;">
+
+                <i id="theme-toggle" class="fa-solid fa-toggle-off" style="font-size: 20px; margin-right: 30px;"></i>
+
+
+                
+                {% if session['user_id'] %}
+                    {% if fuser or cuser %}
+                    <a href="/users/{{ session['user_id'] }}">            
+                        <i class="fa-regular fa-user" style="cursor: pointer;">                  
+                        </i>
+                    </a>
+                    {% else %}
+                    <a href="/login">login/</a> 
+                    {% endif %}
+                    <a href="/messages">
+                        <i class="fa-regular fa-message"></i>
+                    </a>
+                    <a href="/logout" class="logout-link">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </a> 
+                    
+                {% else %}
+                <div style="display: flex; flex-direction: row;gap: 20px;"> 
+                    <a href="/login" class="register-text"><i class="fa-solid fa-door-open">        
+                        <span style="font-family:Inconsolata, Menlo, ChiKareGo2, Geneva; font-size: 15px;">login</span>
+                    </i></a> 
+                    <a href="/register" class="register-text"><i class="fa-solid fa-square-plus">
+                        <span style="font-family:Inconsolata, Menlo, ChiKareGo2, Geneva; font-size: 15px;">sign-up</span>
+                        </i>
+                    </a> 
+                </div>
+
+                {% endif %}
+            </div>    
+        </aside>
+    </div>
+    
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    </div>
+
+    {% if fuser or cuser %}
+    <div class="container">
+
+            {% block sidea_content %}
+
+            {% endblock %}
+        <!-- <div class="layout"> -->
+                <div class="window main">
+                    {% block main_content %}
+                    
+                    {% endblock %}
+
+                </div>
+        <!-- </div> -->
+    </div>
+    {% else %}
+    <div class="video-container">
+        <video id="video1" autoplay muted>
+          <source src="https://videos.pexels.com/video-files/854336/854336-hd_1920_1080_24fps.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <video id="video2" style="display: none;" muted>
+          <source src="https://videos.pexels.com/video-files/854141/854141-hd_1920_1080_25fps.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <video id="video3" style="display: none;" muted  > 
+            <source src="https://videos.pexels.com/video-files/6145962/6145962-uhd_2560_1440_24fps.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <video id="video4" style="display: none;" muted  > 
+            <source src="https://videos.pexels.com/video-files/4778781/4778781-uhd_2732_1440_25fps.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+      </div>    
+    {% endif %}
+    {% block login_signup %}
+                    
+    {% endblock %}
+    <script>
+        const videos = document.querySelectorAll('video');
+        let currentIndex = 0;
+    
+        function playNextVideo() {
+          if (currentIndex < videos.length) {
+            videos[currentIndex].style.display = 'block';
+            videos[currentIndex].play();
+            videos[currentIndex].addEventListener('ended', () => {
+              videos[currentIndex].style.display = 'none';
+              currentIndex++;
+              playNextVideo();
+            });
+          }
+        }
+    
+        // Start the sequence
+        playNextVideo();
+      </script>
+    <script>
+        // Inline JavaScript to handle theme switching immediately
+        document.addEventListener("DOMContentLoaded", function() {
+            const themeCookie = document.cookie.split('; ').find(row => row.startsWith('darkMode='));
+            const isDarkMode = themeCookie ? themeCookie.split('=')[1] === 'true' : false;
+            const themeStylesheet = document.getElementById('theme-stylesheet');
+            themeStylesheet.href = isDarkMode ? '/static/css/styles-darkmode.css' : '/static/css/styles.css';
+            document.body.style.visibility = 'visible';
+        }); 
+    </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="/static/js/script.js"></script>
+
+</body>
+</html>
