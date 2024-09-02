@@ -1,9 +1,7 @@
 from flask import Flask, render_template, redirect, session, flash, url_for, request, jsonify, make_response
-from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, Users, db, Full_user, Post, PostImage, Message
 from forms import UserForm, LoginForm, AddPost
 from werkzeug.utils import secure_filename
-import os
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 
@@ -16,14 +14,7 @@ from sqlalchemy.exc import IntegrityError
 app = Flask(__name__, static_folder='static')
 
 
-upload_folder = os.path.join(os.getcwd(), 'static/uploads')
-if not os.path.exists(upload_folder):
-    os.makedirs(upload_folder)
-
-
-app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
-# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.gjdrnvspfgxnrhcjduei:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
@@ -33,8 +24,6 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 connect_db(app)
 
 
-toolbar = DebugToolbarExtension(app)
-# toolbar.init_app(app)
 geolocator = Nominatim(user_agent="your_app_name", timeout=10)
 
 
@@ -92,9 +81,9 @@ def home_page():
     all_users = Full_user.query.all()
     users_dict = {user.id: user for user in all_users}
 
-    # Calculate age for each user
-    # for user_id, user in users_dict.items():
-    #     user.age = user.calculate_age()
+    Calculate age for each user
+    for user_id, user in users_dict.items():
+        user.age = user.calculate_age()
 
     posts = Post.query.all()
     
