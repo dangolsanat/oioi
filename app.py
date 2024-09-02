@@ -4,7 +4,7 @@ from forms import UserForm, LoginForm, AddPost
 from werkzeug.utils import secure_filename
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
-
+import os
 
 
 # from sqlalchemy.exc import IntegrityError
@@ -13,7 +13,11 @@ from geopy.exc import GeocoderTimedOut
 
 app = Flask(__name__, static_folder='static')
 
+upload_folder = os.path.join(os.getcwd(), 'static/uploads')
+if not os.path.exists(upload_folder):
+    os.makedirs(upload_folder)
 
+app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
