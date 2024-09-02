@@ -1,23 +1,29 @@
 from flask import Flask, render_template, redirect, session, flash, url_for, request, jsonify, make_response
+from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, Users, db, Full_user, Post, PostImage, Message
 from forms import UserForm, LoginForm, AddPost
 from werkzeug.utils import secure_filename
+import os
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 
 
 
-# from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 
 
 app = Flask(__name__, static_folder='static')
 
 
- 
+upload_folder = os.path.join(os.getcwd(), 'static/uploads')
+if not os.path.exists(upload_folder):
+    os.makedirs(upload_folder)
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
+# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.gjdrnvspfgxnrhcjduei:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
@@ -26,7 +32,9 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 
- 
+
+toolbar = DebugToolbarExtension(app)
+# toolbar.init_app(app)
 geolocator = Nominatim(user_agent="your_app_name", timeout=10)
 
 
@@ -108,27 +116,27 @@ def register_user():
     form = LoginForm()
 
     if form.validate_on_submit(): 
-        username=form.username.data
-        password=form.password.data
+        username = form.username.data
+        password = form.password.data
         new_user = Users.register(username, password)
-
-
-
-        #TODO error handling of dublicate usernames.
 
         try:
             db.session.add(new_user)
             db.session.commit()
-            session['user_id']=new_user.id
+            session['user_id'] = new_user.id
             flash("Registration successful! Welcome!", 'success')
             return redirect('/addprofile')
+
+        except IntegrityError:
+            db.session.rollback()
+            flash("Username already exists. Please choose a different username.", 'error')
+
         except Exception as e:
             db.session.rollback()
             flash("An error occurred. Please try again.", 'error')
+            print(f"Error during registration: {e}")
 
     return render_template('register.html', form=form)
-
-
 
 
 """route for posts"""
