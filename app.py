@@ -81,9 +81,6 @@ def home_page():
     all_users = Full_user.query.all()
     users_dict = {user.id: user for user in all_users}
 
-    Calculate age for each user
-    for user_id, user in users_dict.items():
-        user.age = user.calculate_age()
 
     posts = Post.query.all()
     
