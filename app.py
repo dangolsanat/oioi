@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, session, flash, url_for, request, jsonify, make_response
-from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, Users, db, Full_user, Post, PostImage, Message
 from forms import UserForm, LoginForm, AddPost
 from werkzeug.utils import secure_filename
@@ -32,9 +31,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 
-
-toolbar = DebugToolbarExtension(app)
-# toolbar.init_app(app)
+ 
 geolocator = Nominatim(user_agent="your_app_name", timeout=10)
 
 
