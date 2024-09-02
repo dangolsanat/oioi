@@ -4,73 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>This is home</title>
+    <title>OiOi Roommates Connect</title>
 
-    <link id="theme-stylesheet" rel="stylesheet" href="/static/css/styles.css"> <!-- Default stylesheet -->
+    <link id="theme-stylesheet" rel="stylesheet" href="/static/css/styles-darkmode.css"> <!-- Default stylesheet -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body { visibility: hidden }
-        canvas { display: block; }
-        #content {
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            font-family: Arial, sans-serif;
-        }
-        #content h1 {
-            font-size: 3em;
-            margin: 0;
-        }
-        #content p {
-            font-size: 1.5em;
-        }
-        #search-button {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=K2D:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="nav">
+<body>  
+ 
+    <div class="nav" id="nav">
         <aside class="window navi">
             
-                <div class="terminal-prompt logo" style="color:red"><a href="/home" style="text-decoration: none;color: white;">
-                    <i class="fa-solid fa-house-user"></i>
+                <div class="terminal-prompt logo" style="color:red">
+                    <a href="/" style="text-decoration: none;color: white;">
+                    <i id="house-logo" class="fa-solid fa-house-user"></i>
                      oioi</a> 
                 </div>
-
-            <div> 
-                <input type="text" id="search-input" placeholder="///search" class="search-field">
-                <button id="search-button" style="display: none;">Search</button>
-            </div>
             <div class="auth" style="display: flex; flex-direction: row; gap: 20px;">
 
-                <i id="theme-toggle" class="fa-solid fa-toggle-off" style="font-size: 20px; margin-right: 30px;"></i>
+                <i id="theme-toggle" class="fa-solid fa-toggle-on" style="font-size: 20px; margin-right: 30px;"></i>
 
 
                 
                 {% if session['user_id'] %}
                     {% if fuser or cuser %}
                     <a href="/users/{{ session['user_id'] }}">            
-                        <i class="fa-regular fa-user" style="cursor: pointer;">                  
+                        <i id="user-logo" class="fa-regular fa-user" style="cursor: pointer;">                  
                         </i>
                     </a>
                     {% else %}
                     <a href="/login">login/</a> 
                     {% endif %}
-                    <a href="/messages">
+                    <a id="message-logo" href="/messages">
                         <i class="fa-regular fa-message"></i>
                     </a>
-                    <a href="/logout" class="logout-link">
+                    <a id="logout-logo" href="/logout" class="logout-link">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </a> 
                     
@@ -101,75 +72,82 @@
         {% endif %}
     {% endwith %}
     </div>
-
-    {% if fuser or cuser %}
-    <div class="container">
+            
+     <div class="container" id="container">
 
             {% block sidea_content %}
 
+
+
+
+            
             {% endblock %}
-        <!-- <div class="layout"> -->
-                <div class="window main">
+ 
+                <div class="window main userposts">
                     {% block main_content %}
-                    
+                    <div class="card-box">
+                        {% if posts %}
+                            {% for post in posts %}
+                                <div id="card" class="card" data-href="/postes/{{ post.id }}">
+                                    {% if post.user_id in users_dict %}
+                                        <div class="user-info"> 
+                                            <img src="{{ post.user_rel.full_user.user_image }}" alt="User Image" class="circular-image" style="width: 50px; height: 50px;">
+                                            <div style="display: flex; gap: 10px;">
+                                                <h2 style="margin-top: 4px; font-size: 1.5rem; line-height: 1; padding: 0;">
+                                                    <a href="/users/profile/{{ post.user_id }}" style="text-decoration: none;">
+                                                        {{ users_dict[post.user_id].first_name }}
+                                                    </a>
+                                                </h2>
+                                                <i class="fa-regular fa-circle-check" style="color: green; margin-top: 8px"></i>
+                                                <strong style="margin-top: 6px">•</strong>
+                                                <small style="margin-top: 8px"><strong>{{ users_dict[post.user_id].age }}</strong></small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="image-gallery">
+                                        {% if post.images %}
+                                            <div class="gallery-container" data-images="{{ post.images | map(attribute='file_name') | join(',') }}">
+                                                <img id="gallery-image" src="/static/uploads/{{ post.images[0].file_name }}" alt="Post Image" class="gallery-image">
+                                                <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-left nav-button prev-button"></i></button>
+                                                <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-right nav-button next-button"></i></button>
+                                            </div>
+                                        {% else %}
+                                            <p>No images available for this post.</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-details">
+                                        <div>
+                                            <h2 style="margin: 8px; display: inline-block; margin-right: 2px;">${{ post.price }}</h2>
+                                            <h1 style="display: inline-block">/mo</h1>
+                                        </div>
+                                        <div>
+                                            <h1 style="margin: 0px; margin-bottom: 5px;">{{ post.title }}</h1>
+                                        </div>
+                                        <div style="align-self: flex-start; justify-self: flex-end;">
+                                            <small><strong>Borough:</strong> {{ post.borough }}</small><br>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No posts available.</p>
+                        {% endif %}
+                    </div>
                     {% endblock %}
 
                 </div>
-        <!-- </div> -->
+            
+            {% block user_post%}  
+
+            {% endblock %}
+
     </div>
-    {% else %}
-    <div class="video-container">
-        <video id="video1" autoplay muted>
-          <source src="https://videos.pexels.com/video-files/854336/854336-hd_1920_1080_24fps.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <video id="video2" style="display: none;" muted>
-          <source src="https://videos.pexels.com/video-files/854141/854141-hd_1920_1080_25fps.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <video id="video3" style="display: none;" muted  > 
-            <source src="https://videos.pexels.com/video-files/6145962/6145962-uhd_2560_1440_24fps.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <video id="video4" style="display: none;" muted  > 
-            <source src="https://videos.pexels.com/video-files/4778781/4778781-uhd_2732_1440_25fps.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-      </div>    
-    {% endif %}
+   
     {% block login_signup %}
-                    
+                
     {% endblock %}
-    <script>
-        const videos = document.querySelectorAll('video');
-        let currentIndex = 0;
-    
-        function playNextVideo() {
-          if (currentIndex < videos.length) {
-            videos[currentIndex].style.display = 'block';
-            videos[currentIndex].play();
-            videos[currentIndex].addEventListener('ended', () => {
-              videos[currentIndex].style.display = 'none';
-              currentIndex++;
-              playNextVideo();
-            });
-          }
-        }
-    
-        // Start the sequence
-        playNextVideo();
-      </script>
-    <script>
-        // Inline JavaScript to handle theme switching immediately
-        document.addEventListener("DOMContentLoaded", function() {
-            const themeCookie = document.cookie.split('; ').find(row => row.startsWith('darkMode='));
-            const isDarkMode = themeCookie ? themeCookie.split('=')[1] === 'true' : false;
-            const themeStylesheet = document.getElementById('theme-stylesheet');
-            themeStylesheet.href = isDarkMode ? '/static/css/styles-darkmode.css' : '/static/css/styles.css';
-            document.body.style.visibility = 'visible';
-        }); 
-    </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+   
+ 
 <script src="/static/js/script.js"></script>
 
 </body>

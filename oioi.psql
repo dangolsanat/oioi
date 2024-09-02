@@ -1,0 +1,581 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.3 (Postgres.app)
+-- Dumped by pg_dump version 16.3 (Postgres.app)
+
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+
+--
+-- Name: chats; Type: TABLE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE TABLE public.chats (
+    id integer NOT NULL,
+    user_id1 integer NOT NULL,
+    user_id2 integer NOT NULL
+);
+
+
+ALTER TABLE public.chats OWNER TO postgres;
+
+--
+-- Name: chats_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE SEQUENCE public.chats_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.chats_id_seq OWNER TO postgres;
+
+--
+-- Name: chats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER SEQUENCE public.chats_id_seq OWNED BY public.chats.id;
+
+
+--
+-- Name: full_user; Type: TABLE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE TABLE public.full_user (
+    id integer NOT NULL,
+    first_name character varying(25) NOT NULL,
+    last_name character varying(25) NOT NULL,
+    email text NOT NULL,
+    user_image text,
+    dob date NOT NULL,
+    bio character varying(250),
+    intro text,
+    user_id integer
+);
+
+
+ALTER TABLE public.full_user OWNER TO postgres;
+
+--
+-- Name: full_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE SEQUENCE public.full_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.full_user_id_seq OWNER TO postgres;
+
+--
+-- Name: full_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER SEQUENCE public.full_user_id_seq OWNED BY public.full_user.id;
+
+
+--
+-- Name: messages; Type: TABLE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE TABLE public.messages (
+    id integer NOT NULL,
+    sender_id integer NOT NULL,
+    receiver_id integer NOT NULL,
+    content text NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.messages OWNER TO postgres;
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE SEQUENCE public.messages_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
+
+
+--
+-- Name: post_images; Type: TABLE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE TABLE public.post_images (
+    id integer NOT NULL,
+    file_name character varying(255) NOT NULL,
+    post_id integer
+);
+
+
+ALTER TABLE public.post_images OWNER TO postgres;
+
+--
+-- Name: post_images_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE SEQUENCE public.post_images_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.post_images_id_seq OWNER TO postgres;
+
+--
+-- Name: post_images_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER SEQUENCE public.post_images_id_seq OWNED BY public.post_images.id;
+
+
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE TABLE public.posts (
+    id integer NOT NULL,
+    title character varying(50) NOT NULL,
+    description text NOT NULL,
+    address character varying(100) NOT NULL,
+    neighbor character varying(50) NOT NULL,
+    borough character varying(20) NOT NULL,
+    price integer NOT NULL,
+    neighborhood text NOT NULL,
+    user_id integer
+);
+
+
+ALTER TABLE public.posts OWNER TO postgres;
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE SEQUENCE public.posts_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.posts_id_seq OWNER TO postgres;
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER SEQUENCE public.posts_id_seq OWNED BY public.posts.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    username character varying NOT NULL,
+    password character varying NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: chats id; Type: DEFAULT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.chats ALTER COLUMN id SET DEFAULT nextval('public.chats_id_seq'::regclass);
+
+
+--
+-- Name: full_user id; Type: DEFAULT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.full_user ALTER COLUMN id SET DEFAULT nextval('public.full_user_id_seq'::regclass);
+
+
+--
+-- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.messages_id_seq'::regclass);
+
+
+--
+-- Name: post_images id; Type: DEFAULT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.post_images ALTER COLUMN id SET DEFAULT nextval('public.post_images_id_seq'::regclass);
+
+
+--
+-- Name: posts id; Type: DEFAULT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.posts ALTER COLUMN id SET DEFAULT nextval('public.posts_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: chats; Type: TABLE DATA; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+COPY public.chats (id, user_id1, user_id2) FROM stdin;
+1	1	2
+2	3	2
+3	1	3
+\.
+
+
+--
+-- Data for Name: full_user; Type: TABLE DATA; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+COPY public.full_user (id, first_name, last_name, email, user_image, dob, bio, intro, user_id) FROM stdin;
+1	Dexter	McPherson	dexter@lab.com	https://cdn.costumewall.com/wp-content/uploads/2015/09/dexters-laboratory-costume.jpg	1990-03-24	This is Dexter's bio. I am a very passionate scientist. I like to do the dance with dee dee	I'm from small-town TN and moved to NYC for school; now working in financial planning. I've been here 8 years now, 5.5 of them living in this apartment. I'm very laid-back, enjoy both socializing and having time to myself, and try to keep the vibes good and the energy positive. Interests include gaming (video/card/board/etc.), tennis/ping pong/badminton, hiking, baking, mixology, reading, jamming out and building playlists, introspection/spirituality, and good times and conversations had in pubs.	1
+2	Bubbles	Utonium	bubbles@powerpuff.com	https://i.ebayimg.com/images/g/kU4AAOSwpFxko1mu/s-l1200.jpg	1992-11-21	This is Bubble's bio	Hey there! I'm Tiffany, 32, I'm a transplant to the city from Charleston, SC. I'm easy going, always clean up after myself and live a relatively calm life at home. I enjoy cooking for my roommates on occasion and love to have a few friends over for chill dinner hangs.Lover of art, photography, music, coffee, biking and brews. @wolterpynaffit	2
+3	Courage	Bagge	courage@cowardlymail.com	https://miro.medium.com/v2/resize:fit:1400/1*hDYUPYiUe0Nfcb9xIhdKKw.jpeg	1979-04-23	This is Courage's bio		3
+4	Moomin	Chubs	mooumin@example.com	https://yt3.googleusercontent.com/V9sqo4C6K-sbjDogTQdWLiyviw2MyGWPiHLjoF3Us71MKb677V3SQ8KqhorzqHMplgedG6iy=s900-c-k-c0x00ffffff-no-rj	1975-03-03	This is moumin's bio		4
+5	Jerry	Mousey	jerry@example.com	https://i.pinimg.com/736x/a5/96/d9/a596d930bcaadb46e5e138189bcd5245.jpg	1975-03-03	This is jerry's bio		5
+6	Eric	Cartman	cartoman@southpark.com	https://shorturl.at/KKHvu	1995-01-03	This is Cartman's bio	\N	6
+7	Morty	Chauncey	morty@universe.com	https://shorturl.at/EuZJk	2000-08-03	This is Morty's bio	\N	7
+8	Lisa	Simpson	lisa@simpsons.com	https://graphicnovelty2.com/wp-content/uploads/2021/03/lisa-simpson.jpg?w=1400	1997-08-03	This is Lisa's bio	\N	8
+9	Spongebob	Squarepants	sponge@squarepants.com	https://shorturl.at/8nJJH	1990-10-03	This is Squarepants's bio	\N	9
+10	Edd	just_Edd	edd@ededdeddy.com	https://shorturl.at/CnTGC	1990-10-03	This is Squarepants's bio	\N	10
+11	Tom	Cat	rom@tomanderry.com	https://shorturl.at/Jm650	1995-10-03	This is Tom's bio	\N	11
+12	Bugs	Bunny	bugs@carrots.com	https://shorturl.at/QQAdk	1989-10-03	This is Bugs's bio	\N	12
+13	haha	hhehe	kjkj@gmail.com	https://pujacraft.com/cdn/shop/articles/Krishna-Janmashtami--2023-date1_64f79e1e5e4f8.jpg?v=1693982466	2024-08-01	im the shit	hi wht the heell right?	13
+\.
+
+
+--
+-- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+COPY public.messages (id, sender_id, receiver_id, content, "timestamp") FROM stdin;
+1	1	2	Hi Bubbles, I'm interested in your room.	2024-08-18 20:19:52.545674
+2	2	1	Hi Dexter, thanks for reaching out! Let's talk more about it.	2024-08-18 20:19:52.545674
+3	3	4	Hey Moomin, I'm looking for a place in Astoria.	2024-08-18 20:19:52.545674
+4	4	3	Hi Courage, I have a room available. Let's chat!	2024-08-18 20:19:52.545674
+5	2	1	Hi Dexter, why no reply?	2024-08-18 20:19:52.545674
+6	5	1	THIS IS A SPAM!	2024-08-18 20:19:52.545674
+7	3	1	where are you free for a showing?	2024-08-18 20:19:52.545674
+8	4	1	im interested	2024-08-18 20:19:52.545674
+\.
+
+
+--
+-- Data for Name: post_images; Type: TABLE DATA; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+COPY public.post_images (id, file_name, post_id) FROM stdin;
+1	dex1.jpg	1
+2	dex2.jpg	1
+3	dex3.jpg	1
+4	dex4.jpg	1
+5	bubbles.jpg	2
+6	edd.webp	6
+7	edd2.webp	6
+8	edd3.webp	6
+9	edd4.webp	6
+10	edd5.webp	6
+11	edd6.webp	6
+12	edd7.webp	6
+13	edd8.webp	6
+14	sponge1.png	9
+15	sponge2.jpg	9
+16	sponge3.jpg	9
+17	tom2.jpg	15
+18	tom.jpeg	15
+19	tom.jpg	15
+20	lisa1.jpg	8
+21	lisa2.jpg	8
+22	lisa3.jpg	8
+23	morty1.jpg	7
+24	morty2.jpg	7
+25	morty3.jpg	7
+26	morty4.jpg	7
+27	tom.jpg	11
+28	tom.jpeg	11
+29	tom2.jpg	11
+30	1.jpg	4
+31	4.png	3
+32	tom2.jpg	5
+33	cartman2.jpg	10
+34	6.jpg	12
+35	sponge3.jpg	9
+36	cartman1.jpg	10
+37	cartman3.jpg	10
+38	anime1.jpg	13
+39	anime2.jpg	14
+40	anime3.jpg	16
+\.
+
+
+--
+-- Data for Name: posts; Type: TABLE DATA; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+COPY public.posts (id, title, description, address, neighbor, borough, price, neighborhood, user_id) FROM stdin;
+1	One mid-sized room	My roommate is moving out of her amazing room downstairs! Myself and the other roommate occupy the 2 upstairs bedrooms :) Here is what she has posted about her room: It's an incredible unit with TONS of space and privacy. Your room (6x75, unfurnished) will be downstairs along with a spacious living room, your own private entrance, private half bath and in unit washer/ dryer. Your two roomies will be upstairs where the kitchen/ full bath is located. There's a dishwasher, spiral staircase and localized heating system and big shared backyard and is superrrr quiet if you're a light sleeper like me. The apartment is conveniently located right next to the Graham/Grand stop on the L and is steps away from coffee shops, bodegas and bars. Thank you! P.S. Happy to sell the garment rack since there isn't a closet in the room. There is a shared closet off the kitchen upstairs for storage or you can get creative downstairs with it. $1,440 + utilities	140-17 84th Drive, 11435	jamaica	queens	1800	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	1
+2	one small room	Quiet, Peaceful and clean	90-02 63rd Dr, 11374	Flushing	Queens	1300	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	2
+3	Big room, fun roommate	fun loving, outgoing and clean	789 Pine St	bushwick	brooklyn	1200	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	3
+4	Juan's place in Astoria,Queens	Comfortable room available immediately in Astoria. One block away from the nearest train, and three stops away from the city! Shared, spacious living room, full kitchen w/ dishwasher. Your room can comfortably fit 	28-15 24th Ave,	Astoria	Queens	1100	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	4
+5	Dakota's place in Astoria,Queens	medium sized bedroom with a closet and large windows available in my 3BR Astoria apartment! huge common areas and beautiful kitchen. 2 bathrooms and a balcony. great, lovely and safe neighborhood and 2 mid 20s female professionals as roommates! we have one hypoallergenic cat and can accept one more cat for an additional $50 a month! 	31-90 30th street	Asotria	Queens	1400	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	5
+6	rental in Astoria,Queens	Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! 	789 Pine St	bushwick	brooklyn	1250	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	10
+7	Jerry's hole	Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! 	140-17 84th Drive,Briarwood	Jamaica	Queens	1550	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	7
+8	Tom's crib	Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! 	140-17 84th Drive,Briarwood	Jamaica	Queens	850	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	8
+9	one mid-sized room	Quiet, Peaceful and beautiful	123 Main St	jamaica	queens	900	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	9
+10	one small room	Quiet, Peaceful and clean	456 Elm St	upper west side	manhattan	1800	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	6
+11	Big room, fun roommate	fun loving, outgoing and clean	789 Pine St	bushwick	brooklyn	2200	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	11
+12	Bugs Bunny's place in Astoria,Queens	Comfortable room available immediately in Astoria. One block away from the nearest train, and three stops away from the city! Shared, spacious living room, full kitchen w/ dishwasher. Your room can comfortably fit 	28-15 24th Ave,	Astoria	Queens	1100	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	12
+13	Dakota's place in Astoria,Queens	medium sized bedroom with a closet and large windows available in my 3BR Astoria apartment! huge common areas and beautiful kitchen. 2 bathrooms and a balcony. great, lovely and safe neighborhood and 2 mid 20s female professionals as roommates! we have one hypoallergenic cat and can accept one more cat for an additional $50 a month! 	31-90 30th street	Asotria	Queens	1000	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	2
+14	rental in Astoria,Queens	Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! 	789 Pine St	bushwick	brooklyn	1720	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	1
+15	Tom's crib	Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! 	140-17 84th Drive,Briarwood	Jamaica	Queens	1200	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	11
+16	Kyle's crib	Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! 	South Park Hill, CO	Denver	Denver	1100	<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>	6
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+COPY public.users (id, username, password) FROM stdin;
+1	uone	$2b$12$3FyMB9Jvnxhfpme7G12truVb3cAYslrU1IkwmjOHRU8EnzG7SBd9q
+2	utwo	$2b$12$.JObIuaJc3wMDUHT.kNlIejT8vz8NRQOZ8ZxEHRbSCV/AZ1Rqw/6q
+3	uthree	$2b$12$xL1MA.5S7fig/TWWlH6aeOVsvr2ec85OaHo7iukxAwj9e9Kj2Yxy6
+4	ufour	$2b$12$xU7MyrP88AyfljiXV3knU.smq237ZzOr2ARHr4gvCsF8QXfG89.4q
+5	ufive	$2b$12$qzdVQbBQMf65TMdFlv7gsu3wCEO8ZS94o16uWZuZHrZ.kQwJjyH2K
+6	usix	$2b$12$GPKNH6VxrfQnmXkUxGiFSOnRtu2xgYK1iymOlp/CV3nY4yd7WxY42
+7	useven	$2b$12$MVcbV6Vn0gfduWkeerBL7OQV3cJGK/tGAEpvr60Gg6otSy9s43uTa
+8	ueight	$2b$12$WuzAfYwVy8rorheIWHK.eekn.LEHnta4ZJb1V.11UHavp3AwP2oAS
+9	unine	$2b$12$./YO3/ojYVDT7XoF8k.h/uyv3ku.ieQxWw3nUFnEO29t.pCxD2ZtC
+10	uten	$2b$12$eNjWmD7uN6RhodJ5Ztph4OYfvMjFARyW4ye73x7yHqvA2dJ1x0fGK
+11	ueleven	$2b$12$5QDOfJW.zhfPTYAvRVVhVe3q64/DoUARXic6kZ1rjY7y9V9QKLdN2
+12	utwelve	$2b$12$v8mjbohZrUzg9O/m7/23C.Ib7VQAFluVPxqa0a3rdv52jVgHk1LaS
+13	uhaha	$2b$12$fr8MKUb4FFQQw/HKgw6LzuMkDMAaiqOhw93dmLNIoMUi3cdBWpqPi
+\.
+
+
+--
+-- Name: chats_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+SELECT pg_catalog.setval('public.chats_id_seq', 3, true);
+
+
+--
+-- Name: full_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+SELECT pg_catalog.setval('public.full_user_id_seq', 13, true);
+
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+SELECT pg_catalog.setval('public.messages_id_seq', 8, true);
+
+
+--
+-- Name: post_images_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+SELECT pg_catalog.setval('public.post_images_id_seq', 40, true);
+
+
+--
+-- Name: posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+SELECT pg_catalog.setval('public.posts_id_seq', 16, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 13, true);
+
+
+--
+-- Name: chats chats_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.chats
+    ADD CONSTRAINT chats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: full_user full_user_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.full_user
+    ADD CONSTRAINT full_user_email_key UNIQUE (email);
+
+
+--
+-- Name: full_user full_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.full_user
+    ADD CONSTRAINT full_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: post_images post_images_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.post_images
+    ADD CONSTRAINT post_images_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_username_key UNIQUE (username);
+
+
+--
+-- Name: full_user full_user_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.full_user
+    ADD CONSTRAINT full_user_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: messages messages_receiver_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT messages_receiver_id_fkey FOREIGN KEY (receiver_id) REFERENCES public.users(id);
+
+
+--
+-- Name: messages messages_sender_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT messages_sender_id_fkey FOREIGN KEY (sender_id) REFERENCES public.users(id);
+
+
+--
+-- Name: post_images post_images_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.post_images
+    ADD CONSTRAINT post_images_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.posts(id);
+
+
+--
+-- Name: posts posts_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres.gjdrnvspfgxnrhcjduei
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

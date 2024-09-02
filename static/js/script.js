@@ -1,34 +1,124 @@
+const toggle = document.getElementById("theme-toggle");
+const msg = document.getElementById("chat-container");
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    toggle.addEventListener("click", function() {
+        const cards = document.getElementsByClassName("card")
+        if (toggle.classList.contains("fa-toggle-on")) {
+            for (let i = 0; i < cards.length; i++) {
+                cards[i].classList.add("light");
+            };
+        }else {
+            for (let i = 0; i < cards.length; i++) {
+                cards[i].classList.remove("light");
+         };
+    }
+    }
+    );
+
+    toggle.addEventListener("click", function() {
+        const msg_left = document.getElementsByClassName("message-left");
+        const msg_right = document.getElementsByClassName("message-right");
+     
+        if (toggle.classList.contains("fa-toggle-on")) {
+            for (let i = 0; i < msg_left.length; i++) {
+                msg_left[i].classList.add("light");
+            };
+            for (let i = 0; i < msg_right.length; i++) {
+                msg_right[i].classList.add("light");
+            };
+    
+        }else {
+            for (let i = 0; i < msg_left.length; i++) {
+                msg_left[i].classList.remove("light"); 
+            };
+            for (let i = 0; i < msg_right.length; i++) {
+                msg_right[i].classList.remove("light"); 
+            };
+        }
+    });
+
+
+
+
+    const main = document.getElementsByClassName("main");
+    const container = document.getElementById("container");
+    const nav = document.getElementById("nav");
+    const body = document.body;
+    const user_logo = document.getElementById("user-logo");
+    const msg_logo = document.getElementById("message-logo");
+    const logout = document.getElementById("logout-logo");
+    const house_logo = document.getElementById("house-logo");
+    const user_cont = document.getElementById("user-content");
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+
+
+     // Toggle theme on click
+    toggle.addEventListener("click", function() {
+ 
+
+        // Toggle theme icon
+        toggle.classList.toggle("fa-toggle-on");
+        toggle.classList.toggle("fa-toggle-off");
+
+        // Toggle theme classes
+        container.classList.toggle("light");
+        nav.classList.toggle("navlight");
+        body.classList.toggle("dark");
+ 
+        // Toggle icon colors
+        user_logo.classList.toggle("fa-light");
+        msg_logo.classList.toggle("fa-light");
+        logout.classList.toggle("fa-light");
+        house_logo.classList.toggle("fa-light");
+
+        // Toggle card classes
+        user_cont.classList.toggle("light");
+        username.classList.toggle("form-light");
+        password.classList.toggle("form-light");
+ 
+    });
+
+
+    
+});
+
+ 
+
+
+
+
+
+
+
+
 
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    const themeStylesheet = document.getElementById('theme-stylesheet');
-    const themeToggle = document.getElementById('theme-toggle');
-
-    // Load theme preference from localStorage
-    const darkMode = localStorage.getItem('dark_mode') === 'true';
-    themeStylesheet.setAttribute('href', darkMode ? '/static/css/styles-darkmode.css' : '/static/css/styles.css');
-    themeToggle.classList.toggle('fa-toggle-on', darkMode);
-    themeToggle.classList.toggle('fa-toggle-off', !darkMode);
-
-    themeToggle.addEventListener('click', function() {
-        const isDarkMode = themeStylesheet.getAttribute('href').includes('styles-darkmode.css');
-        const newTheme = isDarkMode ? '/static/css/styles.css' : '/static/css/styles-darkmode.css';
-
-        // Update localStorage
-        localStorage.setItem('dark_mode', !isDarkMode);
-
-        // Update the stylesheet link
-        themeStylesheet.setAttribute('href', newTheme);
-
-        // Toggle the icon class
-        this.classList.toggle('fa-toggle-on', !isDarkMode);
-        this.classList.toggle('fa-toggle-off', isDarkMode);
-    });
 });
 
 
+window.onload = function() {
+    document.querySelectorAll('.gallery-container img, .user-info img').forEach(function(img) {
+        img.style.display = 'block';
+    });
+};
 
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.gallery-image, .circular-image');
+
+    images.forEach(image => {
+        const img = new Image();
+        img.src = image.src;
+        img.onload = () => {
+            image.style.visibility = 'visible';
+        };
+    });
+});
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -48,10 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Clear the notification state after checking
     localStorage.removeItem('hasNewMessages');
 });
-
-
-
-
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -82,8 +168,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error(data.error);
             } else {
                 const newMessage = document.createElement('li');
-                newMessage.className='message-right'
-                newMessage.innerHTML = `${data.content}<br><small style="font-size: 0.2em;">Sent at: ${data.timestamp}</small>`;
+                newMessage.className='message-right';
+                 newMessage.innerHTML = `${data.content}<br><small style="font-size: 0.2em;">Sent at: ${data.timestamp}</small>`;
                 messageList.appendChild(newMessage);
                 messageInput.value = '';
             }
@@ -105,11 +191,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Scroll to bottom when the page loads
     scrollToBottom();
 
-    // Optionally, scroll to bottom when a new message is added
-    const observer = new MutationObserver(scrollToBottom);
-    observer.observe(chatContainer, { childList: true, subtree: true });
+    // // Optionally, scroll to bottom when a new message is added
+    // const observer = new MutationObserver(scrollToBottom);
+    // observer.observe(chatContainer, { childList: true, subtree: true });
 });
-
 
 // for image navigation in homepage
 
@@ -165,56 +250,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
-
-//search funtion - not working now 
-
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');
-    const mainContent = document.querySelector('.main-content');
-
-    if (!mainContent) {
-        console.error('Error: mainContent is null');
-        return;
-    }
-
-    searchInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent the default Enter key action (e.g., form submission)
-            const keyword = searchInput.value;
-
-            fetch(`/search?keyword=${encodeURIComponent(keyword)}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.html) {
-                        mainContent.innerHTML = data.html;
-                    } else {
-                        console.error('Error: No HTML returned in response');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    });
-});
-
-
-
-
-document.getElementById('open-modal').addEventListener('click', function() {
-    document.getElementById('myModal').style.display = 'block';
-});
-
-document.getElementById('close-modal').addEventListener('click', function() {
-    document.getElementById('myModal').style.display = 'none';
-});
-
 window.onclick = function(event) {
-    if (event.target === document.getElementById('myModal')) {
+    if (event.target === document.getElementById('open-modal')) {
+        document.getElementById('myModal').style.display = 'block';}
+    else if (event.target === document.getElementById('close-modal')){
         document.getElementById('myModal').style.display = 'none';
     }
 };
+ 

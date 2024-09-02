@@ -4,10 +4,10 @@
 <div class="card-box">
     {% if posts %}
         {% for post in posts %}
-            <div class="card" data-href="/posts/{{ post.id }}">
+            <div id="card" class="card" data-href="/posts/{{ post.id }}">
                 {% if post.user_id in users_dict %}
                     <div class="user-info"> 
-                        <img src="{{ post.user_rel.full_user.user_image }}" alt="User Image" class="circular-image" style="border-radius: 50%; overflow: hidden;">
+                        <img src="{{ post.user_rel.full_user.user_image }}" alt="User Image" class="circular-image" style="width: 50px; height: 50px;">
                         <div style="display: flex; gap: 10px;">
                             <h2 style="margin-top: 4px; font-size: 1.5rem; line-height: 1; padding: 0;">
                                 <a href="/users/profile/{{ post.user_id }}" style="text-decoration: none;">
@@ -23,7 +23,7 @@
                 <div class="image-gallery">
                     {% if post.images %}
                         <div class="gallery-container" data-images="{{ post.images | map(attribute='file_name') | join(',') }}">
-                            <img id="gallery-image" src="/static/uploads/{{ post.images[0].file_name }}" alt="Post Image">
+                            <img id="gallery-image" src="/static/uploads/{{ post.images[0].file_name }}" alt="Post Image" class="gallery-image">
                             <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-left nav-button prev-button"></i></button>
                             <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-right nav-button next-button"></i></button>
                         </div>

@@ -68,7 +68,7 @@
         <div style="display: flex;">
             <div style="display: flex; flex-direction: column; gap:20px;">
                 <div class="user-details">
-                    <a href="/users/profile/{{ post.user_rel.full_user.id }}" style="text-decoration: none;">
+                    <a href="/login" style="text-decoration: none;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <img src="{{post.user_rel.full_user.user_image}}" alt="user_image" class="circular-image">
                             <div style="display: flex; flex-direction: column;">
@@ -86,13 +86,6 @@
                             </div>
                         </div>
                     </a>
-                </div>
-                <div style="display: flex;">
-                    {% if fuser %}
-                    <a href="{{ url_for('messages', recipient_id=full_user_info.id) }}" class="btn" style="display: none;">chat</a>
-                    {% else %}
-                    <a href="{{ url_for('messages', recipient_id=full_user_info.id) }}" class="btn">chat</a>
-                    {% endif %}
                 </div>
                 <div>
                     {% if latitude and longitude %}

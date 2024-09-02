@@ -22,7 +22,8 @@ if not os.path.exists(upload_folder):
 
 
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.gjdrnvspfgxnrhcjduei:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
@@ -37,16 +38,38 @@ toolbar = DebugToolbarExtension(app)
 geolocator = Nominatim(user_agent="your_app_name", timeout=10)
 
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    if 'user_id' in session:
-        cuser = Users.query.get(session['user_id'])
-        full_user_info = Full_user.query.filter_by(user_id=cuser.id).first()
-    else:
-        cuser = None
-        full_user_info = None
+    cuser = None
+    fuser = None
 
-    return render_template('index.html', fuser=full_user_info, cuser=cuser)
+    if "user_id" in session:
+        cuser = Users.query.get(session['user_id'])
+        if cuser:
+            fuser = Full_user.query.filter_by(user_id=cuser.id).first()
+        else:
+            flash("User not found.", "error")
+
+    else:
+        flash("Please log in or sign up.", "error")
+
+    # Fetch all users and posts
+    all_users = Full_user.query.all()
+    users_dict = {user.id: user for user in all_users}
+
+    posts = Post.query.all()
+
+    # Fetch and associate images with posts
+    post_images = PostImage.query.filter(PostImage.post_id.in_([post.id for post in posts])).all()
+    posts_dict = {post.id: post for post in posts}
+    for img in post_images:
+        if hasattr(posts_dict[img.post_id], 'images'):
+            posts_dict[img.post_id].images.append(img)
+        else:
+            posts_dict[img.post_id].images = [img]
+
+    return render_template('index.html', cuser=cuser, fuser=fuser, posts=posts, users_dict=users_dict)
+
 
 @app.route('/home')
 def home_page():
@@ -70,8 +93,8 @@ def home_page():
     users_dict = {user.id: user for user in all_users}
 
     # Calculate age for each user
-    for user_id, user in users_dict.items():
-        user.age = user.calculate_age()
+    # for user_id, user in users_dict.items():
+    #     user.age = user.calculate_age()
 
     posts = Post.query.all()
     
@@ -130,6 +153,19 @@ def post_page(id):
     longitude = location.longitude if location else None
 
     return render_template('post.html', post=post, latitude=latitude, longitude=longitude, full_user_info=full_user_info, fuser=fuser)
+
+@app.route('/postes/<int:id>', methods=['GET'])
+def postes_page(id):
+    post = Post.query.get_or_404(id)
+    full_user_info = Full_user.query.filter_by(user_id=post.user_rel.full_user.id).first()
+
+    
+    location = geolocator.geocode(post.address)
+    latitude = location.latitude if location else None
+    longitude = location.longitude if location else None
+
+    return render_template('post_nosignin.html', post=post, latitude=latitude, longitude=longitude, full_user_info=full_user_info)
+
 
 
 

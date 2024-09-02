@@ -42,6 +42,10 @@ body {
     min-width: 640px;
 }
 
+.user-info img,
+.gallery-container img {
+    visibility: hidden;
+}
 
 a {
     color: #000;
@@ -291,6 +295,12 @@ h2 {
     gap: 5px;
     padding: 8px;
 }
+
+.user-info img{
+    border-radius: 50%; 
+    overflow: hidden;
+}
+
 
 .circular-image {
     height: 3rem;

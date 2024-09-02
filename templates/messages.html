@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 
 {% block sidea_content %}
-<div class="window sidea">
+<div class="window main sidepost" style="width: auto;margin-left: 20rem;">
     <div class="message-content">
         <h2>Conversations</h2>
         <div class="message-area">
@@ -21,12 +21,8 @@
     </div>
 </div>
 
-{% endblock %}
-
-
-{% block main_content %}
-<div>
-    {% if recipient %}
+<div style="display: flex;flex-direction: column; margin-top: 7rem; width: 70%;">
+     {% if recipient %}
         <h2>Conversation with {{ recipient.full_user.first_name }} {{ recipient.full_user.last_name }}</h2>
         <div class="messages-container" id="chat-container">
             {% if messages %}
@@ -51,5 +47,13 @@
     {% else %}
         <p>Select a user to start a conversation.</p>
     {% endif %}
+
 </div>
+
+
 {% endblock %}
+
+
+{% block main_content %}
+
+ {% endblock %}

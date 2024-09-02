@@ -1,32 +1,22 @@
 {% extends 'index.html' %}
 
-{% block login_signup %}
-<div class="login_signup" style="display: block; position: sticky;bottom: 70%;margin-left: 760px;margin-right: 960px; background-color: rgba(89, 89, 89, 0.324);">
-
-    <div class="register" style="padding: 10px;">
-
-    <!-- </div>style="display: flex;    flex-direction: column;"> -->
-
-    <!-- <h2 class="subheading">sign up</h2>     -->
-
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        {%  for field in form
-            if field.widget.input_type !='hidden'
-            %}
-        <p>
-            {{ field.label }} <br>
-            {{field}}
-            <br>
-            {% for error in field.errors %}
-            <br><small style="color: red;">{{ error }}</small>
-            {% endfor %}
-        </p>
-        {% endfor %}
-
-        <button class="btn" type="submit" style="background-color: #17b01e;color:white">login</button>
-    </form>
-    </div>
-</div>
-
-{% endblock %}
+{% block main_content %}
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    {%  for field in form
+                        if field.widget.input_type !='hidden'
+                        %}
+                    <p>
+                        {{ field.label }} <br>
+                        {{field}}
+                        <br>
+                        {% for error in field.errors %}
+                        <br><small style="color: red;">{{ error }}</small>
+                        {% endfor %}
+                    </p>
+                    {% endfor %}
+            
+                    <button class="btn" type="submit">login</button>
+                </form>
+    
+         {% endblock %}
