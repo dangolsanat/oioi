@@ -7,7 +7,7 @@ from geopy.exc import GeocoderTimedOut
 
 
 
-from sqlalchemy.exc import IntegrityError
+# from sqlalchemy.exc import IntegrityError
 
 
 
@@ -113,9 +113,9 @@ def register_user():
             flash("Registration successful! Welcome!", 'success')
             return redirect('/addprofile')
 
-        except IntegrityError:
-            db.session.rollback()
-            flash("Username already exists. Please choose a different username.", 'error')
+        # except IntegrityError:
+        #     db.session.rollback()
+        #     flash("Username already exists. Please choose a different username.", 'error')
 
         except Exception as e:
             db.session.rollback()
