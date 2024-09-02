@@ -1,10 +1,10 @@
 Flask==2.3.3
 Flask-SQLAlchemy==3.0.2
 Flask-Bcrypt==1.0.1
-Flask-WTF==1.0.1
+Flask-WTF>=1.0.0
 geopy==2.3.0
 psycopg2-binary==2.9.7
-Werkzeug==3.0.0
+werkzeug==2.0.3
 SQLAlchemy==2.0.15
 WTForms==3.0.1
 Jinja2==3.1.4
