@@ -2,8 +2,7 @@ from flask import Flask, render_template, redirect, session, flash, url_for, req
 from models import connect_db, Users, db, Full_user, Post, PostImage, Message
 from forms import UserForm, LoginForm, AddPost
 from werkzeug.utils import secure_filename
-import os
-from geopy.geocoders import Nominatim
+ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 
 
@@ -15,15 +14,11 @@ from geopy.exc import GeocoderTimedOut
 app = Flask(__name__, static_folder='static')
 
 
-upload_folder = os.path.join(os.getcwd(), 'static/uploads')
-if not os.path.exists(upload_folder):
-    os.makedirs(upload_folder)
+ 
 
 
-app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.gjdrnvspfgxnrhcjduei:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
-# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+ app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.gjdrnvspfgxnrhcjduei:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
