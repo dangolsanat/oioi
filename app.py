@@ -22,6 +22,7 @@ if not os.path.exists(upload_folder):
 
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
@@ -276,10 +277,6 @@ def user_page(user_id):
         flash("You are not authorized to view this page.", "error")
         return redirect('/login')
 
-    cuser = Users.query.get(session['user_id'])
-    full_user_info = Full_user.query.filter_by(user_id=cuser.id).first()
-    posts = Post.query.filter_by(user_id=cuser.id).all()
-
     user = Full_user.query.filter_by(id=user_id).first()
     if not user:
         flash("User not found.", "error")
@@ -287,40 +284,37 @@ def user_page(user_id):
 
     form = AddPost()
     if form.validate_on_submit():
-        new_post = Post.add_post(
-            user_id=session['user_id'],
-            title=form.title.data,
-            description=form.description.data,
-            address=form.address.data,
-            neighbor=form.neighbor.data,
-            borough=form.borough.data,
-            price=form.price.data,
-            neighborhood=form.neighborhood.data,
-        )
+        try:
+            new_post = Post.add_post(
+                user_id=user_id,
+                title=form.title.data,
+                description=form.description.data,
+                address=form.address.data,
+                neighbor=form.neighbor.data,
+                borough=form.borough.data,
+                price=form.price.data,
+                neighborhood=form.neighborhood.data,
+            )
 
-        if new_post:
-            images = request.files.getlist('images')  # Get the list of files from the form
+            images = request.files.getlist('images')
             if images:
                 for image in images:
                     if image:
                         filename = secure_filename(image.filename)
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                        try:
-                            image.save(filepath)
-                            PostImage.add_image(post_id=new_post.id, filename=filename)
-                            print(f"Uploaded and saved image: {filename}")
-                        except Exception as e:
-                            print(f"Error saving file: {e}")
-            else:
-                print("No images uploaded or images not found in request.")
-
+                        image.save(filepath)
+                        PostImage.add_image(post_id=new_post.id, filename=filename)
             flash('Post added successfully!', 'success')
-            return redirect(url_for('home_page'))
-        else:
+        except Exception as e:
+            print(f"Error: {e}")
             flash('Error adding post', 'error')
+        return redirect(url_for('home_page'))
 
-    return render_template('user.html', user=user, form=form, fuser=full_user_info, cuser=cuser, posts=posts)
+    # Only execute these queries after the form submission check
+    full_user_info = Full_user.query.filter_by(user_id=user_id).first()
+    posts = Post.query.filter_by(user_id=user_id).all()
 
+    return render_template('user.html', user=user, form=form, fuser=full_user_info, posts=posts)
 
 
 
