@@ -173,61 +173,35 @@ def edit_post(id):
 
 """route for adding a profile"""
 
+
+
 @app.route('/addprofile', methods=['GET', 'POST'])
 def profile_info():
     user = Users.query.get(session.get('user_id'))
-
-    fuser=user
-
     if not user:
         flash('User not found. Please log in first.', "error")
         return redirect('/')
 
     form = UserForm()
 
-    profile = Full_user.query.filter_by(user_id=user.id).first()
-
-    if profile:
-        flash('Profile already exists!', "error")
-        return redirect('/home')
-    
-    # profile = Full_user.query.filter_by(user_id=user.id).first()
-
     if form.validate_on_submit():
-        first_name = form.first_name.data
-        last_name = form.last_name.data
-        email = form.email.data
-        user_image = form.user_image.data  # This is now a URL
-        dob = form.dob.data
-        bio = form.bio.data
-        intro=form.intro.data
-
-        # Check if the user already has a profile
-        # profile = Full_user.query.filter_by(user_id=user.id).first()
-
-        # if profile:
-        #     flash('Profile already exists!')
-        #     return redirect('/home')
-
-        # Create a new profile
         Full_user.add_profile(
             user_id=user.id,
-            firstname=first_name,
-            lastname=last_name,
-            email=email,
-            image=user_image,  # Use the URL directly
-            dob=dob,
-            bio=bio,
-            intro=intro,
+            firstname=form.first_name.data,
+            lastname=form.last_name.data,
+            email=form.email.data,
+            image=form.user_image.data,  # Ensure this is a URL
+            dob=form.dob.data,
+            bio=form.bio.data,
+            intro=form.intro.data,
         )
-
-
 
         flash('Profile created successfully!')
         return redirect('/home')
 
-    # For GET requests or form validation errors
-    return render_template('profileadd.html', form=form, fuser=fuser)
+    return render_template('profileadd.html', form=form, fuser=user)
+
+
 
 
 
@@ -264,49 +238,34 @@ def logout_user():
     return redirect('/')
 
 
+
 @app.route('/users/<int:user_id>', methods=['GET', 'POST'])
 def user_page(user_id):
-    if "user_id" not in session or session['user_id'] != user_id:
-        flash("You are not authorized to view this page.", "error")
-        return redirect('/login')
-
-    user = Full_user.query.filter_by(id=user_id).first()
-    if not user:
-        flash("User not found.", "error")
-        return redirect('/home')
-
+    user = Users.query.get_or_404(user_id)
     form = AddPost()
-    if form.validate_on_submit():
-        try:
-            new_post = Post.add_post(
-                user_id=user_id,
-                title=form.title.data,
-                description=form.description.data,
-                address=form.address.data,
-                neighbor=form.neighbor.data,
-                borough=form.borough.data,
-                price=form.price.data,
-                neighborhood=form.neighborhood.data,
-            )
 
-            images = request.files.getlist('images')
-            if images:
-                for image in images:
-                    if image:
-                        url = url
-                        PostImage.add_image(post_id=new_post.id, url=url)
-            flash('Post added successfully!', 'success')
-        except Exception as e:
-            print(f"Error: {e}")
-            flash('Error adding post', 'error')
+    if form.validate_on_submit():
+        new_post = Post.add_post(
+            user_id=user_id,
+            title=form.title.data,
+            description=form.description.data,
+            address=form.address.data,
+            neighbor=form.neighbor.data,
+            borough=form.borough.data,
+            price=form.price.data,
+            neighborhood=form.neighborhood.data,
+        )
+
+        images = request.files.getlist('images')  # Assuming you get URLs from a file input
+        for image in images:
+            if image:
+                url = image.data  # Get URL data
+                PostImage.add_image(post_id=new_post.id, url=url)
+
+        flash('Post added successfully!', 'success')
         return redirect(url_for('home_page'))
 
-    # Only execute these queries after the form submission check
-    full_user_info = Full_user.query.filter_by(user_id=user_id).first()
-    posts = Post.query.filter_by(user_id=user_id).all()
-
-    return render_template('user.html', user=user, form=form, fuser=full_user_info, posts=posts)
-
+    return render_template('user.html', user=user, form=form, fuser=user, posts=Post.query.filter_by(user_id=user.id).all())
 
 
 

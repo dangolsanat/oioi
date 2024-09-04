@@ -46,16 +46,13 @@ class Full_user(db.Model):
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
     email = db.Column(db.Text, nullable=False, unique=True)
-    user_image = db.Column(db.Text, nullable=True)
+    user_image = db.Column(db.Text, nullable=True)  # URL instead of file path
     dob = db.Column(db.Date, nullable=False)
     bio = db.Column(db.String(250), nullable=True)
-    intro = db.Column(db.Text, nullable = True)
+    intro = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-
-    # Relationships
     user = db.relationship('Users', back_populates='full_user')
- 
 
     @classmethod
     def add_profile(cls, user_id, firstname, lastname, email, image, dob, bio, intro):
@@ -63,7 +60,7 @@ class Full_user(db.Model):
             first_name=firstname,
             last_name=lastname,
             email=email,
-            user_image=image,
+            user_image=image,  # URL is saved here
             dob=dob,
             bio=bio,
             intro=intro,    
@@ -76,6 +73,9 @@ class Full_user(db.Model):
         today = datetime.today().date()
         age = today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
         return age
+
+
+
 
 class Message(db.Model):
     __tablename__ = 'messages'
@@ -137,24 +137,18 @@ class Post(db.Model):
             db.session.rollback()
             return None
 
+
 class PostImage(db.Model):
     __tablename__ = 'post_images'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    url = db.Column(db.String(1000), nullable=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    url = db.Column(db.Text, nullable=False)  # URL to the image
 
-    # Relationships
-    post_rel = db.relationship('Post', backref=db.backref('images', lazy=True))
+    post = db.relationship('Post', back_populates='images')
 
     @classmethod
     def add_image(cls, post_id, url):
-        try:
-            image_instance = cls(post_id=post_id, url=url)
-            db.session.add(image_instance)
-            db.session.commit()
-            return image_instance
-        except Exception as e:
-            print(f"Error adding image: {e}")
-            db.session.rollback()
-            return None
+        new_image = cls(post_id=post_id, url=url)
+        db.session.add(new_image)
+        db.session.commit()
