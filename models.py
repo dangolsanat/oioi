@@ -1,8 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from datetime import datetime
-from werkzeug.utils import secure_filename
-import os
 from flask import current_app as app
 
 
@@ -54,8 +52,10 @@ class Full_user(db.Model):
     intro = db.Column(db.Text, nullable = True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+
     # Relationships
     user = db.relationship('Users', back_populates='full_user')
+ 
 
     @classmethod
     def add_profile(cls, user_id, firstname, lastname, email, image, dob, bio, intro):
@@ -141,16 +141,16 @@ class PostImage(db.Model):
     __tablename__ = 'post_images'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    file_name = db.Column(db.String(255), nullable=True)
+    url = db.Column(db.String(1000), nullable=True)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
     # Relationships
     post_rel = db.relationship('Post', backref=db.backref('images', lazy=True))
 
     @classmethod
-    def add_image(cls, post_id, filename):
+    def add_image(cls, post_id, url):
         try:
-            image_instance = cls(post_id=post_id, file_name=filename)
+            image_instance = cls(post_id=post_id, url=url)
             db.session.add(image_instance)
             db.session.commit()
             return image_instance

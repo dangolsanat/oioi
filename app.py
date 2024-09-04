@@ -1,8 +1,6 @@
 from flask import Flask, render_template, redirect, session, flash, url_for, request, jsonify, make_response
 from models import connect_db, Users, db, Full_user, Post, PostImage, Message
 from forms import UserForm, LoginForm, AddPost
-from werkzeug.utils import secure_filename
-import os
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 
@@ -15,12 +13,7 @@ from sqlalchemy.exc import IntegrityError
 app = Flask(__name__, static_folder='static')
 
 
-upload_folder = os.path.join(os.getcwd(), 'static/uploads')
-if not os.path.exists(upload_folder):
-    os.makedirs(upload_folder)
 
-
-app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
 # app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -300,10 +293,8 @@ def user_page(user_id):
             if images:
                 for image in images:
                     if image:
-                        filename = secure_filename(image.filename)
-                        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                        image.save(filepath)
-                        PostImage.add_image(post_id=new_post.id, filename=filename)
+                        url = url
+                        PostImage.add_image(post_id=new_post.id, url=url)
             flash('Post added successfully!', 'success')
         except Exception as e:
             print(f"Error: {e}")
