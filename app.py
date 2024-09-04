@@ -1,24 +1,29 @@
 from flask import Flask, render_template, redirect, session, flash, url_for, request, jsonify, make_response
+from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, Users, db, Full_user, Post, PostImage, Message
 from forms import UserForm, LoginForm, AddPost
 from werkzeug.utils import secure_filename
+import os
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
-import os
 
 
-# from sqlalchemy.exc import IntegrityError
+
+from sqlalchemy.exc import IntegrityError
 
 
 
 app = Flask(__name__, static_folder='static')
 
+
 upload_folder = os.path.join(os.getcwd(), 'static/uploads')
 if not os.path.exists(upload_folder):
     os.makedirs(upload_folder)
 
+
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'static/uploads')
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.gjdrnvspfgxnrhcjduei:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "abc123"
@@ -28,6 +33,8 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 connect_db(app)
 
 
+toolbar = DebugToolbarExtension(app)
+# toolbar.init_app(app)
 geolocator = Nominatim(user_agent="your_app_name", timeout=10)
 
 
@@ -85,6 +92,9 @@ def home_page():
     all_users = Full_user.query.all()
     users_dict = {user.id: user for user in all_users}
 
+    # Calculate age for each user
+    # for user_id, user in users_dict.items():
+    #     user.age = user.calculate_age()
 
     posts = Post.query.all()
     
@@ -117,9 +127,9 @@ def register_user():
             flash("Registration successful! Welcome!", 'success')
             return redirect('/addprofile')
 
-        # except IntegrityError:
-        #     db.session.rollback()
-        #     flash("Username already exists. Please choose a different username.", 'error')
+        except IntegrityError:
+            db.session.rollback()
+            flash("Username already exists. Please choose a different username.", 'error')
 
         except Exception as e:
             db.session.rollback()
@@ -274,12 +284,8 @@ def user_page(user_id):
     full_user_info = Full_user.query.filter_by(user_id=cuser.id).first()
     posts = Post.query.filter_by(user_id=cuser.id).all()
 
-    all_users = Full_user.query.all()
-    users_dict = {user.id: user for user in all_users}
-
-    if user_id in users_dict:
-        user = users_dict[user_id]
-    else:
+    user = Full_user.query.filter_by(id=user_id).first()
+    if not user:
         flash("User not found.", "error")
         return redirect('/home')
 
@@ -318,65 +324,6 @@ def user_page(user_id):
             flash('Error adding post', 'error')
 
     return render_template('user.html', user=user, form=form, fuser=full_user_info, cuser=cuser, posts=posts)
-
-    if "user_id" not in session or session['user_id'] != user_id:
-        flash("You are not authorized to view this page.", "error")
-        return redirect('/login')
-
-    cuser = Users.query.get(session['user_id'])
-    full_user_info = Full_user.query.filter_by(user_id=cuser.id).first()
-    posts = Post.query.filter_by(user_id=cuser.id).all()
-
-    all_users = Full_user.query.all()
-    users_dict = {user.id: user for user in all_users}
-
-    if user_id in users_dict:
-        user = users_dict[user_id]
-    else:
-        flash("User not found.", "error")
-        return redirect('/home')
-
-    form = AddPost()
-    if form.validate_on_submit():
-        new_post = Post.add_post(
-            user_id=session['user_id'],
-            title=form.title.data,
-            description=form.description.data,
-            address=form.address.data,
-            neighbor=form.neighbor.data,
-            borough=form.borough.data,
-            price=form.price.data,
-            neighborhood=form.neighborhood.data,
-        )
-
-        if new_post:
-            images = request.files.getlist('images')  # Get list of files from form
-            if images:
-                for image in images:
-                    if image:
-                        filename = secure_filename(image.filename)
-                        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                        try:
-                            image.save(filepath)
-                            PostImage.add_image(post_id=new_post.id, images=[image])  # Pass list of images
-                            print(f"Uploaded and saved image: {filename}")
-                        except Exception as e:
-                            print(f"Error saving file: {e}")
-            else:
-                print("No images uploaded or images not found in request.")
-
-            flash('Post added successfully!', 'success')
-            return redirect(url_for('home_page'))
-        else:
-            flash('Error adding post', 'error')
-
-    return render_template('user.html', user=user, form=form, fuser=full_user_info, cuser=cuser, posts=posts)
-
-
-
-
-
-
 
 
 
