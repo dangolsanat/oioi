@@ -82,17 +82,18 @@ def upload_to_supabase(file):
         
         print(f"Attempting to upload file {unique_filename} to Supabase storage with content type {content_type}")
         
-        # Upload to Supabase storage
         try:
             # Upload file
-            supabase.storage.from_('images').upload(
+            result = supabase.storage.from_('images').upload(
                 path=unique_filename,
                 file=file_bytes,
                 file_options={"contentType": content_type}
             )
             
-            # Construct the public URL directly
-            public_url = f"https://{supabase_url.replace('https://', '')}/storage/v1/object/public/images/{unique_filename}"
+            # Get the public URL directly from Supabase
+            bucket_url = f"https://{supabase_url.replace('https://', '')}/storage/v1/object/public/images"
+            public_url = f"{bucket_url}/{unique_filename}"
+            
             print(f"Successfully uploaded image: {public_url}")
             return public_url
             
