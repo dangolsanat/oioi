@@ -69,32 +69,35 @@ def upload_to_supabase(file):
         file_ext = os.path.splitext(file.filename)[1]
         unique_filename = f"{uuid.uuid4()}{file_ext}"
         
-        # Upload to Supabase storage
+        # Read file content
         file_bytes = file.read()
-        result = supabase.storage.from_('images').upload(
-            path=unique_filename,
-            file=file_bytes,
-            file_options={"content-type": file.content_type}
-        )
         
-        if not result or not result.get('Key'):
-            print(f"Upload failed: {result}")
-            return None
-
-        # Get the public URL
+        print(f"Attempting to upload file {unique_filename} to Supabase storage")
+        
+        # Upload to Supabase storage
         try:
+            # Upload file
+            supabase.storage.from_('images').upload(
+                path=unique_filename,
+                file=file_bytes,
+                file_options={"contentType": file.content_type}
+            )
+            
+            # Get the public URL immediately after successful upload
             public_url = supabase.storage.from_('images').get_public_url(unique_filename)
             print(f"Successfully uploaded image: {public_url}")
             return public_url
-        except Exception as e:
-            print(f"Error getting public URL: {e}")
+            
+        except Exception as upload_error:
+            print(f"Detailed upload error: {str(upload_error)}")
+            if hasattr(upload_error, 'response'):
+                print(f"Response status: {upload_error.response.status_code if hasattr(upload_error.response, 'status_code') else 'N/A'}")
+                print(f"Response headers: {upload_error.response.headers if hasattr(upload_error.response, 'headers') else 'N/A'}")
+                print(f"Response body: {upload_error.response.text if hasattr(upload_error.response, 'text') else 'N/A'}")
             return None
 
     except Exception as e:
-        print(f"Error uploading to Supabase: {e}")
-        # Log additional error details if available
-        if hasattr(e, 'response'):
-            print(f"Response details: {e.response.text if hasattr(e.response, 'text') else e.response}")
+        print(f"General error in upload_to_supabase: {str(e)}")
         return None
 
 @app.route('/', methods=['GET', 'POST'])
