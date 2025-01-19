@@ -91,13 +91,8 @@ def upload_to_supabase(file):
                 file_options={"contentType": content_type}
             )
             
-            # Get the public URL
-            public_url = supabase.storage.from_('images').get_public_url(unique_filename)
-            
-            # Ensure the URL is properly formatted
-            if not public_url.startswith('http'):
-                public_url = f"https://{supabase_url}/storage/v1/object/public/images/{unique_filename}"
-            
+            # Construct the public URL directly
+            public_url = f"https://{supabase_url.replace('https://', '')}/storage/v1/object/public/images/{unique_filename}"
             print(f"Successfully uploaded image: {public_url}")
             return public_url
             
