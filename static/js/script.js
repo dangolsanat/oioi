@@ -203,29 +203,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const galleryContainers = document.querySelectorAll('.gallery-container');
     
     galleryContainers.forEach(container => {
-        const images = container.dataset.images.split(',').map(filename => `/static/uploads/${filename}`);
+        const images = container.dataset.images.split(',');
         let currentIndex = 0;
 
         const galleryImage = container.querySelector('#gallery-image');
         const prevButton = container.querySelector('.prev-button');
         const nextButton = container.querySelector('.next-button');
 
-        function updateImage() {
-            galleryImage.src = images[currentIndex];
+        if (galleryImage && prevButton && nextButton) {
+            function updateImage() {
+                if (images[currentIndex]) {
+                    galleryImage.src = images[currentIndex].trim();
+                }
+            }
+
+            prevButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+                updateImage();
+            });
+
+            nextButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
+                updateImage();
+            });
+
+            // Initialize with the first image
+            updateImage();
         }
-
-        prevButton.addEventListener('click', function() {
-            currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
-            updateImage();
-        });
-
-        nextButton.addEventListener('click', function() {
-            currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
-            updateImage();
-        });
-
-        // Initialize with the first image
-        updateImage();
     });
 });
 
