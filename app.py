@@ -66,13 +66,21 @@ def upload_to_supabase(file):
     
     try:
         # Generate a unique filename
-        file_ext = os.path.splitext(file.filename)[1]
+        file_ext = os.path.splitext(file.filename)[1].lower()
         unique_filename = f"{uuid.uuid4()}{file_ext}"
         
         # Read file content
         file_bytes = file.read()
         
-        print(f"Attempting to upload file {unique_filename} to Supabase storage")
+        # Set correct content type based on file extension
+        content_type = {
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.png': 'image/png',
+            '.gif': 'image/gif'
+        }.get(file_ext, 'application/octet-stream')
+        
+        print(f"Attempting to upload file {unique_filename} to Supabase storage with content type {content_type}")
         
         # Upload to Supabase storage
         try:
@@ -80,11 +88,16 @@ def upload_to_supabase(file):
             supabase.storage.from_('images').upload(
                 path=unique_filename,
                 file=file_bytes,
-                file_options={"contentType": file.content_type}
+                file_options={"contentType": content_type}
             )
             
-            # Get the public URL immediately after successful upload
+            # Get the public URL
             public_url = supabase.storage.from_('images').get_public_url(unique_filename)
+            
+            # Ensure the URL is properly formatted
+            if not public_url.startswith('http'):
+                public_url = f"https://{supabase_url}/storage/v1/object/public/images/{unique_filename}"
+            
             print(f"Successfully uploaded image: {public_url}")
             return public_url
             
