@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: oioi
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: oioi-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SQLALCHEMY_DATABASE_URI
+        fromDatabase:
+          name: oioi-db
+          property: connectionString
+      - key: RENDER
+        value: true
+      - key: FLASK_ENV
+        value: production
+
+databases:
+  - name: oioi-db
+    databaseName: oioi
+    plan: free 

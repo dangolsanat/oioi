@@ -16,7 +16,7 @@ load_dotenv()
 app = Flask(__name__, static_folder='static')
 
 # Use DATABASE_URL from environment or default to local database
-database_url = os.environ.get('DATABASE_URL')
+database_url = os.environ.get('SQLALCHEMY_DATABASE_URI') or os.environ.get('DATABASE_URL')
 if database_url and database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
