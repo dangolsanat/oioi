@@ -9,17 +9,20 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 import tempfile
-from supabase import create_client, Client
+from supabase import create_client
 import uuid
 
 # Load environment variables from .env file if it exists
 load_dotenv()
 
 # Initialize Supabase client
-supabase: Client = create_client(
-    os.environ.get('SUPABASE_URL'),
-    os.environ.get('SUPABASE_KEY')
-)
+supabase_url = os.environ.get('SUPABASE_URL')
+supabase_key = os.environ.get('SUPABASE_KEY')
+if supabase_url and supabase_key:
+    supabase = create_client(supabase_url, supabase_key)
+else:
+    print("Warning: Supabase credentials not found in environment variables")
+    supabase = None
 
 app = Flask(__name__, static_folder='static')
 
@@ -57,7 +60,7 @@ def allowed_file(filename):
 
 def upload_to_supabase(file):
     """Upload file to Supabase Storage and return the public URL"""
-    if not file:
+    if not file or not supabase:
         return None
     
     try:
@@ -66,9 +69,11 @@ def upload_to_supabase(file):
         unique_filename = f"{uuid.uuid4()}{file_ext}"
         
         # Upload to Supabase storage
+        file_bytes = file.read()
         result = supabase.storage.from_('images').upload(
-            unique_filename,
-            file.read()
+            path=unique_filename,
+            file=file_bytes,
+            file_options={"content-type": file.content_type}
         )
         
         # Get the public URL
