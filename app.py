@@ -8,18 +8,33 @@ from geopy.exc import GeocoderTimedOut
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
+import tempfile
 
+# Load environment variables from .env file if it exists
 load_dotenv()
 
 app = Flask(__name__, static_folder='static')
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+# Use DATABASE_URL from environment or default to local database
+database_url = os.environ.get('DATABASE_URL')
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url or "postgresql:///oioi"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
-app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY')
+app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'default-dev-key')
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Set up upload folder - use temp directory in production
+if os.environ.get('RENDER'):
+    # On Render, use a temporary directory
+    UPLOAD_FOLDER = tempfile.gettempdir()
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+else:
+    # Local development
+    app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 connect_db(app)
 migrate = Migrate(app, db)
