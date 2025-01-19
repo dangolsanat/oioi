@@ -9,9 +9,17 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 import tempfile
+from supabase import create_client, Client
+import uuid
 
 # Load environment variables from .env file if it exists
 load_dotenv()
+
+# Initialize Supabase client
+supabase: Client = create_client(
+    os.environ.get('SUPABASE_URL'),
+    os.environ.get('SUPABASE_KEY')
+)
 
 app = Flask(__name__, static_folder='static')
 
@@ -46,6 +54,29 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def upload_to_supabase(file):
+    """Upload file to Supabase Storage and return the public URL"""
+    if not file:
+        return None
+    
+    try:
+        # Generate a unique filename
+        file_ext = os.path.splitext(file.filename)[1]
+        unique_filename = f"{uuid.uuid4()}{file_ext}"
+        
+        # Upload to Supabase storage
+        result = supabase.storage.from_('images').upload(
+            unique_filename,
+            file.read()
+        )
+        
+        # Get the public URL
+        public_url = supabase.storage.from_('images').get_public_url(unique_filename)
+        return public_url
+    except Exception as e:
+        print(f"Error uploading to Supabase: {e}")
+        return None
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -193,10 +224,11 @@ def edit_post(id):
             # Handle image uploads if any
             if form.images.data:
                 for image in form.images.data:
-                    if image:
-                        filename = secure_filename(image.filename)
-                        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        PostImage.add_image(post.id, filename)
+                    if image and allowed_file(image.filename):
+                        # Upload to Supabase and get public URL
+                        public_url = upload_to_supabase(image)
+                        if public_url:
+                            PostImage.add_image(post_id=post.id, url=public_url)
 
             db.session.commit()
             flash("Post updated successfully!", "success")
@@ -281,12 +313,13 @@ def user_page(user_id):
             neighborhood_description=form.neighborhood_description.data,
         )
 
-        images = request.files.getlist('images')  # Get list of uploaded files
+        images = request.files.getlist('images')
         for image in images:
             if image and allowed_file(image.filename):
-                filename = secure_filename(image.filename)
-                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                PostImage.add_image(post_id=new_post.id, url=filename)
+                # Upload to Supabase and get public URL
+                public_url = upload_to_supabase(image)
+                if public_url:
+                    PostImage.add_image(post_id=new_post.id, url=public_url)
 
         flash('Post added successfully!', 'success')
         return redirect(url_for('home_page'))
