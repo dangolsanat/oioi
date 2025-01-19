@@ -39,6 +39,12 @@ class Users(db.Model):
         else:
             return False
 
+    def get_age(self):
+        """Get user's age from full_user profile."""
+        if self.full_user:
+            return self.full_user.calculate_age()
+        return None
+
 class Full_user(db.Model):
     __tablename__ = 'full_user'
 
@@ -107,26 +113,28 @@ class Post(db.Model):
     title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text, nullable=False)
     address = db.Column(db.String(100), nullable=False)
-    neighbor = db.Column(db.String(50), nullable=False)
+    neighborhood = db.Column(db.String(50), nullable=False)
     borough = db.Column(db.String(20), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    neighborhood = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    neighborhood_description = db.Column(db.Text, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     # Relationships
-    user_rel = db.relationship('Users', backref=db.backref('posts', lazy=True))
+    user_rel = db.relationship('Users', backref=db.backref('posts', lazy=True, cascade='all, delete-orphan'))
+    images = db.relationship('PostImage', back_populates='post', cascade='all, delete-orphan')
 
     @classmethod
-    def add_post(cls, user_id, title, description, address, neighbor,price, borough, neighborhood):
+    def add_post(cls, user_id, title, description, address, neighborhood, price, borough, neighborhood_description=None):
         try:
             post = cls(
                 title=title,
                 description=description,
                 address=address,
-                neighbor=neighbor,
+                neighborhood=neighborhood,
                 borough=borough,
                 price=price,
-                neighborhood=neighborhood,
+                neighborhood_description=neighborhood_description,
                 user_id=user_id,
             )
             db.session.add(post)
@@ -142,13 +150,20 @@ class PostImage(db.Model):
     __tablename__ = 'post_images'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
-    url = db.Column(db.Text, nullable=False)  # URL to the image
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
+    url = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     post = db.relationship('Post', back_populates='images')
 
     @classmethod
     def add_image(cls, post_id, url):
-        new_image = cls(post_id=post_id, url=url)
-        db.session.add(new_image)
-        db.session.commit()
+        try:
+            new_image = cls(post_id=post_id, url=url)
+            db.session.add(new_image)
+            db.session.commit()
+            return new_image
+        except Exception as e:
+            print(f"Error adding image: {e}")
+            db.session.rollback()
+            return None

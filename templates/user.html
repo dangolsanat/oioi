@@ -13,7 +13,7 @@
         <div style="display: flex;width: 100%;">
                 <div style="display: flex; justify-content: space-between;width: 100%;">
                     <h2 style="margin: 0;">Hi, I'm {{ user.first_name }}</h2>
-                    <span style="margin-left: auto;margin-top: 10px;"><strong>{{ user.calculate_age() }}</strong></span>
+                    <span style="margin-left: auto;margin-top: 10px;"><strong>{{ user.get_age() }}</strong></span>
                     <br>
                 </div>  
         </div>
@@ -54,10 +54,6 @@
                                 <div class="inside-form">
                                     {{ form.address.label }}  
                                     {{ form.address() }} 
-                                </div>  
-                                <div class="inside-form">
-                                    {{ form.neighbor.label }} 
-                                    {{ form.neighbor() }}  
                                 </div>  
                                 <div class="inside-form">
                                     {{ form.borough.label }}

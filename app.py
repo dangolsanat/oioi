@@ -1,32 +1,36 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, session, flash, url_for, request, jsonify, make_response
 from models import connect_db, Users, db, Full_user, Post, PostImage, Message
 from forms import UserForm, LoginForm, AddPost
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
-
-
-
 from sqlalchemy.exc import IntegrityError
+from flask_migrate import Migrate
+from werkzeug.utils import secure_filename
 
-
+load_dotenv()
 
 app = Flask(__name__, static_folder='static')
 
-
-
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres.zbdnvxkwfezjvwltqbgm:Vp*4.$Lxsv5kaGL@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
-# app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///oioi'
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
-app.config["SECRET_KEY"] = "abc123"
+app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY')
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 connect_db(app)
-
+migrate = Migrate(app, db)
 
 geolocator = Nominatim(user_agent="your_app_name", timeout=10)
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -50,16 +54,10 @@ def index():
     posts = Post.query.all()
 
     # Fetch and associate images with posts
-    post_images = PostImage.query.filter(PostImage.post_id.in_([post.id for post in posts])).all()
-    posts_dict = {post.id: post for post in posts}
-    for img in post_images:
-        if hasattr(posts_dict[img.post_id], 'images'):
-            posts_dict[img.post_id].images.append(img)
-        else:
-            posts_dict[img.post_id].images = [img]
+    for post in posts:
+        post.images = PostImage.query.filter_by(post_id=post.id).all()
 
     return render_template('index.html', cuser=cuser, fuser=fuser, posts=posts, users_dict=users_dict)
-
 
 @app.route('/home')
 def home_page():
@@ -82,24 +80,13 @@ def home_page():
     all_users = Full_user.query.all()
     users_dict = {user.id: user for user in all_users}
 
-    # Calculate age for each user
-    # for user_id, user in users_dict.items():
-    #     user.age = user.calculate_age()
-
     posts = Post.query.all()
     
     # Fetch and associate images with posts
-    post_images = PostImage.query.filter(PostImage.post_id.in_([post.id for post in posts])).all()
-    posts_dict = {post.id: post for post in posts}
-    for img in post_images:
-        if hasattr(posts_dict[img.post_id], 'images'):
-            posts_dict[img.post_id].images.append(img)
-        else:
-            posts_dict[img.post_id].images = [img]
+    for post in posts:
+        post.images = PostImage.query.filter_by(post_id=post.id).all()
 
     return render_template('home.html', cuser=cuser, fuser=full_user_info, posts=posts, users_dict=users_dict)
-
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
@@ -128,21 +115,31 @@ def register_user():
 
     return render_template('register.html', form=form)
 
-
-"""route for posts"""
-
 @app.route('/posts/<int:id>', methods=['GET'])
 def post_page(id):
-    fuser = session['user_id']
-    post = Post.query.get_or_404(id)
-    full_user_info = Full_user.query.filter_by(user_id=post.user_rel.full_user.id).first()
+    try:
+        fuser = session.get('user_id')
+        post = Post.query.get_or_404(id)
+        full_user_info = Full_user.query.filter_by(user_id=post.user_rel.full_user.id).first()
 
-    
-    location = geolocator.geocode(post.address)
-    latitude = location.latitude if location else None
-    longitude = location.longitude if location else None
+        latitude = longitude = None
+        try:
+            location = geolocator.geocode(post.address)
+            if location:
+                latitude = location.latitude
+                longitude = location.longitude
+        except GeocoderTimedOut:
+            flash("Location service temporarily unavailable", "warning")
+        except Exception as e:
+            flash("Error getting location information", "error")
+            print(f"Geolocation error: {e}")
 
-    return render_template('post.html', post=post, latitude=latitude, longitude=longitude, full_user_info=full_user_info, fuser=fuser)
+        return render_template('post.html', post=post, latitude=latitude, longitude=longitude, 
+                             full_user_info=full_user_info, fuser=fuser)
+    except Exception as e:
+        flash("Error loading post", "error")
+        print(f"Error in post_page: {e}")
+        return redirect('/')
 
 @app.route('/postes/<int:id>', methods=['GET'])
 def postes_page(id):
@@ -156,24 +153,45 @@ def postes_page(id):
 
     return render_template('post_nosignin.html', post=post, latitude=latitude, longitude=longitude, full_user_info=full_user_info)
 
-
-
-
-
-"""route for editing a post"""
-
 @app.route('/posts/<int:id>/edit', methods=['GET', 'POST'])
 def edit_post(id):
-    user = Users.query.get(session.get('user_id'))
+    if "user_id" not in session:
+        flash("Please login first", "error")
+        return redirect('/login')
 
-    post = Post.query.get(id)
-    return render_template('edit_post.html')
+    post = Post.query.get_or_404(id)
+    if post.user_id != session['user_id']:
+        flash("You can only edit your own posts", "error")
+        return redirect('/')
 
+    form = AddPost(obj=post)
+    
+    if form.validate_on_submit():
+        try:
+            post.title = form.title.data
+            post.description = form.description.data
+            post.address = form.address.data
+            post.neighborhood = form.neighborhood.data
+            post.borough = form.borough.data
+            post.price = form.price.data
 
+            # Handle image uploads if any
+            if form.images.data:
+                for image in form.images.data:
+                    if image:
+                        filename = secure_filename(image.filename)
+                        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        PostImage.add_image(post.id, filename)
 
-"""route for adding a profile"""
+            db.session.commit()
+            flash("Post updated successfully!", "success")
+            return redirect(f'/posts/{id}')
+        except Exception as e:
+            db.session.rollback()
+            flash("Error updating post", "error")
+            print(f"Error in edit_post: {e}")
 
-
+    return render_template('edit_post.html', form=form, post=post)
 
 @app.route('/addprofile', methods=['GET', 'POST'])
 def profile_info():
@@ -201,10 +219,6 @@ def profile_info():
 
     return render_template('profileadd.html', form=form, fuser=user)
 
-
-
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
     if 'user_id' in session:
@@ -229,15 +243,11 @@ def login_user():
 
     return render_template("login.html", form=form)
 
-
-
 @app.route('/logout')  
 def logout_user():
     flash('See you soon!')
     session.pop('user_id')
     return redirect('/')
-
-
 
 @app.route('/users/<int:user_id>', methods=['GET', 'POST'])
 def user_page(user_id):
@@ -250,24 +260,23 @@ def user_page(user_id):
             title=form.title.data,
             description=form.description.data,
             address=form.address.data,
-            neighbor=form.neighbor.data,
+            neighborhood=form.neighborhood.data,
             borough=form.borough.data,
             price=form.price.data,
-            neighborhood=form.neighborhood.data,
+            neighborhood_description=form.neighborhood_description.data,
         )
 
-        images = request.files.getlist('images')  # Assuming you get URLs from a file input
+        images = request.files.getlist('images')  # Get list of uploaded files
         for image in images:
-            if image:
-                url = image.data  # Get URL data
-                PostImage.add_image(post_id=new_post.id, url=url)
+            if image and allowed_file(image.filename):
+                filename = secure_filename(image.filename)
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                PostImage.add_image(post_id=new_post.id, url=filename)
 
         flash('Post added successfully!', 'success')
         return redirect(url_for('home_page'))
 
     return render_template('user.html', user=user, form=form, fuser=user, posts=Post.query.filter_by(user_id=user.id).all())
-
-
 
 @app.route('/users/profile/<int:user_id>', methods=['GET'])
 def user_profile(user_id):
@@ -288,12 +297,6 @@ def user_profile(user_id):
         return redirect(f'/users/{user_id}')
 
     return render_template('profile.html', user=user, full_user_info=full_user_info, posts=posts, cuser=cuser)
-
-
-
-
-
-
 
 @app.route('/messages', methods=['GET', 'POST'])
 def messages():
@@ -353,9 +356,6 @@ def messages():
                            recipient=recipient, 
                            messages=messages, cur_user=cur_user)
 
-
-
-
 @app.route('/send_message', methods=['POST'])
 def handle_send_message():
     sender_id = session.get('user_id')
@@ -373,7 +373,6 @@ def handle_send_message():
         }), 200
     else:
         return jsonify({'error': 'Invalid data'}), 400
-
 
 @app.route('/search', methods=['GET'])
 def search():

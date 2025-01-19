@@ -8,10 +8,9 @@
     <div class="photo-map-container">
             <div class="post-image-gallery">
                 {% if post.images %}
-                    {% for img in post.images %}
-                        <!-- Ensure correct image source -->
-                        <img src="{{ '/static/uploads/' + img.file_name}}" alt="" style="height: 200px;" />
-                    {% endfor %}
+                    <div class="gallery-container" data-images="{{ post.images | map(attribute='url') | join(',') }}">
+                        <img id="gallery-image" src="/static/uploads/{{ post.images[0].url }}" alt="Post Image">
+                    </div>
                 {% else %}
                     <p>No images available for this post.</p>
                 {% endif %}
@@ -76,7 +75,7 @@
                                     <small><strong>{{post.user_rel.full_user.first_name}}</strong></small>
                                     <i class="fa-regular fa-circle-check" style="color: green;"></i>
                                     <strong>•</strong>
-                                    <small>{{ post.user_rel.full_user.calculate_age() }}</small>
+                                    <small>{{ post.user_rel.get_age() }}</small>
                                 </div>
                                 <div style="margin-top: 5px;">
                                     <small style="display: inline-block; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">

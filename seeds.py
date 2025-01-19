@@ -199,9 +199,9 @@ with app.app_context():
         title='One mid-sized room',
         description="My roommate is moving out of her amazing room downstairs! Myself and the other roommate occupy the 2 upstairs bedrooms :) Here is what she has posted about her room: It's an incredible unit with TONS of space and privacy. Your room (6x75, unfurnished) will be downstairs along with a spacious living room, your own private entrance, private half bath and in unit washer/ dryer. Your two roomies will be upstairs where the kitchen/ full bath is located. There's a dishwasher, spiral staircase and localized heating system and big shared backyard and is superrrr quiet if you're a light sleeper like me. The apartment is conveniently located right next to the Graham/Grand stop on the L and is steps away from coffee shops, bodegas and bars. Thank you! P.S. Happy to sell the garment rack since there isn't a closet in the room. There is a shared closet off the kitchen upstairs for storage or you can get creative downstairs with it. $1,440 + utilities",
         address='140-17 84th Drive, 11435',
-        neighbor='jamaica',
+        neighborhood='jamaica',
         borough='queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1800',
         user_id=user1.id
     )
@@ -210,9 +210,9 @@ with app.app_context():
         title='one small room',
         description='Quiet, Peaceful and clean',
         address='90-02 63rd Dr, 11374',
-        neighbor='Flushing',
+        neighborhood='Flushing',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1300',
         user_id=user2.id
     )
@@ -221,9 +221,9 @@ with app.app_context():
         title='Big room, fun roommate',
         description='fun loving, outgoing and clean',
         address='789 Pine St',
-        neighbor='bushwick',
+        neighborhood='bushwick',
         borough='brooklyn',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1200',
         user_id=user3.id
     )
@@ -231,9 +231,9 @@ with app.app_context():
         title="Juan's place in Astoria,Queens",
         description='Comfortable room available immediately in Astoria. One block away from the nearest train, and three stops away from the city! Shared, spacious living room, full kitchen w/ dishwasher. Your room can comfortably fit ',
         address='28-15 24th Ave,',
-        neighbor='Astoria',
+        neighborhood='Astoria',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1100',
         user_id=user4.id
     )
@@ -242,9 +242,9 @@ with app.app_context():
         title="Dakota's place in Astoria,Queens",
         description='medium sized bedroom with a closet and large windows available in my 3BR Astoria apartment! huge common areas and beautiful kitchen. 2 bathrooms and a balcony. great, lovely and safe neighborhood and 2 mid 20s female professionals as roommates! we have one hypoallergenic cat and can accept one more cat for an additional $50 a month! ',
         address='31-90 30th street',
-        neighbor='Asotria',
+        neighborhood='Asotria',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1400',
         user_id=user5.id
     )
@@ -252,9 +252,9 @@ with app.app_context():
         title="rental in Astoria,Queens",
         description="Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! ",
         address='789 Pine St',
-        neighbor='bushwick',
+        neighborhood='bushwick',
         borough='brooklyn',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1250',
         user_id=user10.id
     )
@@ -263,9 +263,9 @@ with app.app_context():
         title="Jerry's hole",
         description="Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! ",
         address='140-17 84th Drive,Briarwood',
-        neighbor='Jamaica',
+        neighborhood='Jamaica',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1550',
         user_id=user7.id
     )
@@ -274,9 +274,9 @@ with app.app_context():
         title="Tom's crib",
         description="Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! ",
         address='140-17 84th Drive,Briarwood',
-        neighbor='Jamaica',
+        neighborhood='Jamaica',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='850',
         user_id=user8.id
     )
@@ -284,9 +284,9 @@ with app.app_context():
         title='one mid-sized room',
         description='Quiet, Peaceful and beautiful',
         address='123 Main St',
-        neighbor='jamaica',
+        neighborhood='jamaica',
         borough='queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='900',
         user_id=user9.id
     )
@@ -295,9 +295,9 @@ with app.app_context():
         title='one small room',
         description='Quiet, Peaceful and clean',
         address='456 Elm St',
-        neighbor='upper west side',
+        neighborhood='upper west side',
         borough='manhattan',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1800',
         user_id=user6.id
     )
@@ -306,9 +306,9 @@ with app.app_context():
         title='Big room, fun roommate',
         description='fun loving, outgoing and clean',
         address='789 Pine St',
-        neighbor='bushwick',
+        neighborhood='bushwick',
         borough='brooklyn',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='2200',
         user_id=user11.id
     )
@@ -316,9 +316,9 @@ with app.app_context():
         title="Bugs Bunny's place in Astoria,Queens",
         description='Comfortable room available immediately in Astoria. One block away from the nearest train, and three stops away from the city! Shared, spacious living room, full kitchen w/ dishwasher. Your room can comfortably fit ',
         address='28-15 24th Ave,',
-        neighbor='Astoria',
+        neighborhood='Astoria',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1100',
         user_id=user12.id
     )
@@ -327,9 +327,9 @@ with app.app_context():
         title="Dakota's place in Astoria,Queens",
         description='medium sized bedroom with a closet and large windows available in my 3BR Astoria apartment! huge common areas and beautiful kitchen. 2 bathrooms and a balcony. great, lovely and safe neighborhood and 2 mid 20s female professionals as roommates! we have one hypoallergenic cat and can accept one more cat for an additional $50 a month! ',
         address='31-90 30th street',
-        neighbor='Asotria',
+        neighborhood='Asotria',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1000',
         user_id=user2.id
     )
@@ -337,9 +337,9 @@ with app.app_context():
         title="rental in Astoria,Queens",
         description="Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! ",
         address='789 Pine St',
-        neighbor='bushwick',
+        neighborhood='bushwick',
         borough='brooklyn',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1720',
         user_id=user1.id
     )
@@ -348,9 +348,9 @@ with app.app_context():
         title="Tom's crib",
         description="Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! ",
         address='140-17 84th Drive,Briarwood',
-        neighbor='Jamaica',
+        neighborhood='Jamaica',
         borough='Queens',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1200',
         user_id=user11.id
     )
@@ -359,9 +359,9 @@ with app.app_context():
         title="Kyle's crib",
         description="Looking for a roommate to join this great apartment. I thought I had someone, but they fell through at the last minute. Let my misfortune be your gain! Apartment is on the first floor. Living room and kitchen are fully furnished, all that is left is one spot for a roommate! ",
         address="South Park Hill, CO",
-        neighbor='Denver',
+        neighborhood='Denver',
         borough='Denver',
-        neighborhood = '<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
+        neighborhood_description='<li>1 block from the Franklin Av stop</li><li>2nd floor walk up</li><li>1 block from the Botanical Gardens & Brooklyn Museum</li><li>Great coffee shops / food options all round</li>',
         price='1100',
         user_id=user6.id
     )
@@ -388,170 +388,153 @@ with app.app_context():
 
     # Add images to posts
     img1 = PostImage(
-        file_name='dex1.jpg',
+        url='dex1.jpg',
         post_id=post1.id
     )
 
     img2 = PostImage(
-        file_name='dex2.jpg',
+        url='dex2.jpg',
         post_id=post1.id
     )
 
     img3 = PostImage(
-        file_name='dex3.jpg',
+        url='dex3.jpg',
         post_id=post1.id
     )
 
     img4 = PostImage(
-        file_name= 'dex4.jpg',
+        url='dex4.jpg',
         post_id=post1.id
     )
+
     img5 = PostImage(
-        file_name='bubbles.jpg',
+        url='anime1.jpg',
         post_id=post2.id
     )
+
     img6 = PostImage(
-        file_name='edd.webp',
-        post_id=post6.id
+        url='anime2.jpg',
+        post_id=post2.id
     )
+
     img7 = PostImage(
-        file_name='edd2.webp',
-        post_id=post6.id
+        url='anime3.jpg',
+        post_id=post2.id
     )
+
     img8 = PostImage(
-        file_name='edd3.webp',
-        post_id=post6.id
+        url='bubbles.jpg',
+        post_id=post2.id
     )
+
     img9 = PostImage(
-        file_name='edd4.webp',
-        post_id=post6.id
+        url='cartman1.jpg',
+        post_id=post3.id
     )
 
     img10 = PostImage(
-        file_name='edd5.webp',
-        post_id=post6.id
+        url='cartman2.jpg',
+        post_id=post3.id
     )
 
     img11 = PostImage(
-        file_name='edd6.webp',
-        post_id=post6.id
+        url='cartman3.jpg',
+        post_id=post3.id
     )
 
     img12 = PostImage(
-        file_name='edd7.webp',
-        post_id=post6.id
-    )
-    img13 = PostImage(
-        file_name='edd8.webp',
-        post_id=post6.id
-    )
-    img14 = PostImage(
-        file_name='sponge1.png',
-        post_id=post9.id
-    )
-    img15 = PostImage(
-        file_name='sponge2.jpg',
-        post_id=post9.id
-    )
-    img16 = PostImage(
-        file_name='sponge3.jpg',
-        post_id=post9.id
-    )
-    img17 = PostImage(
-        file_name='tom2.jpg',
-        post_id=post15.id
-    )
-    img18 = PostImage(
-        file_name='tom.jpeg',
-        post_id=post15.id
-    )
-    img19 = PostImage(
-        file_name='tom.jpg',
-        post_id=post15.id
-    )
-    img20 = PostImage(
-        file_name='lisa1.jpg',
-        post_id=post8.id
-    )
-    img21 = PostImage(
-        file_name='lisa2.jpg',
-        post_id=post8.id
-    )
-    img22 = PostImage(
-        file_name='lisa3.jpg',
-        post_id=post8.id
-    )
-    img23 = PostImage(
-        file_name='morty1.jpg',
-        post_id=post7.id
-    )
-    img24 = PostImage(
-        file_name='morty2.jpg',
-        post_id=post7.id
-    )
-    img25 = PostImage(
-        file_name='morty3.jpg',
-        post_id=post7.id
-    )
-    img26 = PostImage(
-        file_name='morty4.jpg',
-        post_id=post7.id
-    )
-    img27 = PostImage(
-        file_name='tom.jpg',
-        post_id=post11.id
-    )
-    img28 = PostImage(
-        file_name='tom.jpeg',
-        post_id=post11.id
-    )
-    img29 = PostImage(
-        file_name='tom2.jpg',
-        post_id=post11.id
-    )
-    img30 = PostImage(
-        file_name='1.jpg',
-        post_id=post4.id
-    )
-    img31 = PostImage(
-        file_name='4.png',
+        url='edd.webp',
         post_id=post3.id
     )
-    img32 = PostImage(
-        file_name='tom2.jpg',
+
+    img13 = PostImage(
+        url='edd2.webp',
+        post_id=post4.id
+    )
+
+    img14 = PostImage(
+        url='edd3.webp',
+        post_id=post4.id
+    )
+
+    img15 = PostImage(
+        url='edd4.webp',
+        post_id=post4.id
+    )
+
+    img16 = PostImage(
+        url='edd5.webp',
+        post_id=post4.id
+    )
+
+    img17 = PostImage(
+        url='lisa1.jpg',
         post_id=post5.id
     )
-    img33 = PostImage(
-        file_name='cartman2.jpg',
-        post_id=post10.id
+
+    img18 = PostImage(
+        url='lisa2.jpg',
+        post_id=post5.id
     )
-    img35 = PostImage(
-        file_name='6.jpg',
-        post_id=post12.id
+
+    img19 = PostImage(
+        url='lisa3.jpg',
+        post_id=post5.id
     )
-    img36 = PostImage(  
-        file_name='sponge3.jpg',
-        post_id=post9.id
+
+    img20 = PostImage(
+        url='lisa4.jpeg',
+        post_id=post5.id
     )
-    img37 = PostImage(
-    file_name='cartman1.jpg',
-    post_id=post10.id
+
+    img21 = PostImage(
+        url='morty1.jpg',
+        post_id=post6.id
     )
-    img38 = PostImage(
-    file_name='cartman3.jpg',
-    post_id=post10.id
+
+    img22 = PostImage(
+        url='morty2.jpg',
+        post_id=post6.id
     )
-    img39 = PostImage(
-        file_name='anime1.jpg',
-        post_id=post13.id
+
+    img23 = PostImage(
+        url='morty3.jpg',
+        post_id=post6.id
     )
-    img40 = PostImage(
-    file_name='anime2.jpg',
-    post_id=post14.id
+
+    img24 = PostImage(
+        url='morty4.jpg',
+        post_id=post6.id
     )
-    img41 = PostImage(
-    file_name='anime3.jpg',
-    post_id=post16.id
+
+    img25 = PostImage(
+        url='sponge1.png',
+        post_id=post7.id
+    )
+
+    img26 = PostImage(
+        url='sponge2.jpg',
+        post_id=post7.id
+    )
+
+    img27 = PostImage(
+        url='sponge3.jpg',
+        post_id=post7.id
+    )
+
+    img28 = PostImage(
+        url='tom.jpg',
+        post_id=post8.id
+    )
+
+    img29 = PostImage(
+        url='tom2.jpg',
+        post_id=post8.id
+    )
+
+    img30 = PostImage(
+        url='tom.jpeg',
+        post_id=post8.id
     )
 
     # Add images to session and commit
@@ -585,16 +568,6 @@ with app.app_context():
     db.session.add(img28)
     db.session.add(img29)
     db.session.add(img30)
-    db.session.add(img31)
-    db.session.add(img32)
-    db.session.add(img33)
-    db.session.add(img35)
-    db.session.add(img36)
-    db.session.add(img37)
-    db.session.add(img38)
-    db.session.add(img39)
-    db.session.add(img40)
-    db.session.add(img41)
 
     db.session.commit()
 

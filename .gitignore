@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Uploads
+static/uploads/
+
+# Flask
+instance/
+.webassets-cache/
+
+# Migrations
+migrations/versions/
+migrations/README
+migrations/alembic.ini
+migrations/env.py
+migrations/script.py.mako 
