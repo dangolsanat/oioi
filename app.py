@@ -161,6 +161,9 @@ def home_page():
     # Fetch and associate images with posts
     for post in posts:
         post.images = PostImage.query.filter_by(post_id=post.id).all()
+        # Debug: Print image URLs
+        for img in post.images:
+            print(f"Post {post.id} image URL: {img.url}")
 
     return render_template('home.html', cuser=cuser, fuser=full_user_info, posts=posts, users_dict=users_dict)
 

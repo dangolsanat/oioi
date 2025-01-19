@@ -19,13 +19,17 @@
             {% endif %}
             <div class="image-gallery">
                 {% if post.images and post.images|length > 0 %}
+                    <!-- Debug info -->
+                    {% for img in post.images %}
+                        <!-- Image URL: {{ img.url }} -->
+                    {% endfor %}
                     <div class="gallery-container" data-images="{{ post.images | map(attribute='url') | join(',') }}">
-                        <img id="gallery-image" 
+                        <img id="gallery-image-{{ post.id }}" 
                              src="{{ post.images[0].url }}" 
                              alt="Post Image" 
                              style="height: 200px;"
                              onload="console.log('Image loaded successfully:', this.src)"
-                             onerror="console.error('Failed to load image:', this.src); this.onerror=null; this.src='/static/default-image.jpg'">
+                             onerror="console.error('Failed to load image:', this.src, 'Status:', this.complete); this.onerror=null;">
                         <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-left nav-button prev-button"></i></button>
                         <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-right nav-button next-button"></i></button>
                     </div>
@@ -53,9 +57,28 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const images = document.querySelectorAll('#gallery-image');
+    const images = document.querySelectorAll('[id^="gallery-image-"]');
     images.forEach(img => {
-        console.log('Image URL:', img.src);
+        console.log('Image element:', {
+            id: img.id,
+            src: img.src,
+            complete: img.complete,
+            naturalWidth: img.naturalWidth,
+            naturalHeight: img.naturalHeight
+        });
+        
+        // Try to fetch the image URL to check for CORS or other issues
+        fetch(img.src)
+            .then(response => {
+                console.log('Fetch response for', img.src, ':', {
+                    status: response.status,
+                    ok: response.ok,
+                    headers: Object.fromEntries(response.headers)
+                });
+            })
+            .catch(error => {
+                console.error('Fetch error for', img.src, ':', error);
+            });
     });
 });
 </script>
