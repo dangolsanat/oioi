@@ -61,6 +61,7 @@ def allowed_file(filename):
 def upload_to_supabase(file):
     """Upload file to Supabase Storage and return the public URL"""
     if not file or not supabase:
+        print("No file or Supabase client not initialized")
         return None
     
     try:
@@ -76,11 +77,24 @@ def upload_to_supabase(file):
             file_options={"content-type": file.content_type}
         )
         
+        if not result or not result.get('Key'):
+            print(f"Upload failed: {result}")
+            return None
+
         # Get the public URL
-        public_url = supabase.storage.from_('images').get_public_url(unique_filename)
-        return public_url
+        try:
+            public_url = supabase.storage.from_('images').get_public_url(unique_filename)
+            print(f"Successfully uploaded image: {public_url}")
+            return public_url
+        except Exception as e:
+            print(f"Error getting public URL: {e}")
+            return None
+
     except Exception as e:
         print(f"Error uploading to Supabase: {e}")
+        # Log additional error details if available
+        if hasattr(e, 'response'):
+            print(f"Response details: {e.response.text if hasattr(e.response, 'text') else e.response}")
         return None
 
 @app.route('/', methods=['GET', 'POST'])
