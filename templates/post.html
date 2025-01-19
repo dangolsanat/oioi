@@ -7,9 +7,9 @@
         
     <div class="photo-map-container">
             <div class="post-image-gallery">
-                {% if post.images %}
+                {% if post.images and post.images|length > 0 %}
                     <div class="gallery-container" data-images="{{ post.images | map(attribute='url') | join(',') }}">
-                        <img id="gallery-image" src="/static/uploads/{{ post.images[0].url }}" alt="Post Image">
+                        <img id="gallery-image" src="{{ post.images[0].url }}" alt="Post Image">
                         <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-left nav-button prev-button"></i></button>
                         <button style="padding: 0px; border: 0px;"><i class="fa-solid fa-circle-chevron-right nav-button next-button"></i></button>
                     </div>
@@ -138,6 +138,38 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('Map cannot be displayed because the address could not be located.');
         document.getElementById('map').innerHTML = 'Map cannot be displayed because the address could not be located.';
+    }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.gallery-container');
+    if (container) {
+        const imageUrls = container.getAttribute('data-images').split(',');
+        const img = container.querySelector('img');
+        let currentIndex = 0;
+
+        container.querySelector('.prev-button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
+            img.src = imageUrls[currentIndex];
+        });
+
+        container.querySelector('.next-button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex + 1) % imageUrls.length;
+            img.src = imageUrls[currentIndex];
+        });
+
+        // Debug image loading
+        img.addEventListener('load', function() {
+            console.log('Image loaded successfully:', this.src);
+        });
+
+        img.addEventListener('error', function() {
+            console.error('Failed to load image:', this.src);
+        });
     }
 });
 </script>
